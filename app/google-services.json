@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "541244659358",
+    "project_id": "mspp-project",
+    "storage_bucket": "mspp-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541244659358:android:6a1aa9247590e58074cd8f",
+        "android_client_info": {
+          "package_name": "com.example.mspp_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhID7Q4aWiPiCFseUFqAzE32ykfp4Cstg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
