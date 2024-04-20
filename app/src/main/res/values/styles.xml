@@ -1,0 +1,15 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+
+    <!-- Snackbar Custom Style -->
+    <style name="CustomSnackbar" parent="Widget.MaterialComponents.Snackbar">
+        <item name="background">@drawable/snackbar_custom_background</item> <!-- Use the custom background drawable -->
+        <item name="android:textColor">@android:color/white</item> <!-- Custom text color -->
+        <item name="android:textAlignment">center</item> <!-- Text alignment -->
+    </style>
+
+
+    <color name="colorBlackTransparent">#7E0E0E0E</color>
+</resources>

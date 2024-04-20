@@ -3,10 +3,13 @@ package activities
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,11 +26,20 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        val passwordEditText: EditText = findViewById(R.id.password_edit_text)
+        configurePasswordVisibilityToggle()
+
+        val icons = listOf(
+            findViewById<ImageView>(R.id.password_criteria_1_icon),
+            findViewById<ImageView>(R.id.password_criteria_2_icon),
+            findViewById<ImageView>(R.id.password_criteria_3_icon),
+            findViewById<ImageView>(R.id.password_criteria_4_icon)
+        )
+
         val nameEditText: EditText = findViewById(R.id.name_edit_text)
         val surnameEditText: EditText = findViewById(R.id.surname_edit_text)
         dobEditText = findViewById(R.id.dob_edit_text)
         val idNumberEditText: EditText = findViewById(R.id.id_number_edit_text)
-        val passwordEditText: EditText = findViewById(R.id.password_edit_text)
         val registerButton: Button = findViewById(R.id.register_button)
 
         dobEditText.setOnClickListener {
@@ -35,6 +47,16 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         configurePasswordVisibilityToggle()
+
+        passwordEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                updatePasswordCriteriaIcons(s.toString(), icons)
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+        })
 
 
         registerButton.setOnClickListener {
@@ -132,6 +154,18 @@ class RegisterActivity : AppCompatActivity() {
                 PasswordTransformationMethod.getInstance()
             }
             passwordEditText.setSelection(passwordEditText.text.length)
+        }
+    }
+    private fun updatePasswordCriteriaIcons(password: String, icons: List<ImageView>) {
+        val criteria = listOf(
+            password.length >= 8,
+            password.any { it.isDigit() },
+            password.any { !it.isLetterOrDigit() },
+            password.any { it.isUpperCase() }
+        )
+
+        criteria.zip(icons).forEach { (meetsCriteria, icon) ->
+            icon.setImageResource(if (meetsCriteria) R.drawable.ic_check_black else R.drawable.ic_cross_black)
         }
     }
 }
