@@ -7,11 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mspp_project.R
 import java.text.SimpleDateFormat
@@ -21,13 +17,19 @@ import java.util.regex.Pattern
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var dobEditText: EditText
+    private lateinit var emailEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        emailEditText = findViewById(R.id.email_edit_text)
+        val nameEditText: EditText = findViewById(R.id.name_edit_text)
+        val surnameEditText: EditText = findViewById(R.id.surname_edit_text)
+        dobEditText = findViewById(R.id.dob_edit_text)
+        val idNumberEditText: EditText = findViewById(R.id.id_number_edit_text)
         val passwordEditText: EditText = findViewById(R.id.password_edit_text)
-        configurePasswordVisibilityToggle()
+        val registerButton: Button = findViewById(R.id.register_button)
 
         val icons = listOf(
             findViewById<ImageView>(R.id.password_criteria_1_icon),
@@ -36,74 +38,90 @@ class RegisterActivity : AppCompatActivity() {
             findViewById<ImageView>(R.id.password_criteria_4_icon)
         )
 
-        val nameEditText: EditText = findViewById(R.id.name_edit_text)
-        val surnameEditText: EditText = findViewById(R.id.surname_edit_text)
-        dobEditText = findViewById(R.id.dob_edit_text)
-        val idNumberEditText: EditText = findViewById(R.id.id_number_edit_text)
-        val registerButton: Button = findViewById(R.id.register_button)
-
-        dobEditText.setOnClickListener {
-            showDatePickerDialog()
-        }
-
-        configurePasswordVisibilityToggle()
-
         passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updatePasswordCriteriaIcons(s.toString(), icons)
             }
 
-            override fun afterTextChanged(s: Editable) {}
+            override fun afterTextChanged(s: Editable?) {}
         })
 
+        dobEditText.setOnClickListener {
+            showDatePicker()
+        }
 
         registerButton.setOnClickListener {
+            val email = emailEditText.text.toString().trim()
             val name = nameEditText.text.toString().trim()
             val surname = surnameEditText.text.toString().trim()
             val dob = dobEditText.text.toString().trim()
             val idNumber = idNumberEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            if (validateInput(name, surname, dob, idNumber, password)) {
-                // Input is valid, proceed with the registration logic
-                // TODO: Implement your registration logic here
+            if (validateInput(email, name, surname, dob, idNumber, password)) {
+                // Proceed with registration logic
+                // TODO: Implement registration logic here
             }
         }
 
-        val loginTextView: TextView = findViewById(R.id.textView_login)
-        loginTextView.setOnClickListener {
-            // Start LoginActivity
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
+        configurePasswordVisibilityToggle()
+        setupLoginListener()
     }
 
-    private fun showDatePickerDialog() {
+    private fun showDatePicker() {
         val calendar = Calendar.getInstance()
-        DatePickerDialog(this, { _, year, month, dayOfMonth ->
-            val selectedDate = Calendar.getInstance()
-            selectedDate.set(year, month, dayOfMonth)
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            dobEditText.setText(dateFormat.format(selectedDate.time))
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedDate = String.format(
+                    Locale.getDefault(),
+                    "%04d-%02d-%02d",
+                    selectedYear,
+                    (selectedMonth + 1),
+                    selectedDay
+                )
+                dobEditText.setText(formattedDate)
+            },
+            year,
+            month,
+            day
+        )
+
+        datePickerDialog.show()
     }
 
-    private fun validateInput(name: String, surname: String, dob: String, idNumber: String, password: String): Boolean {
-        // Validate name
+    private fun validateInput(
+        email: String,
+        name: String,
+        surname: String,
+        dob: String,
+        idNumber: String,
+        password: String
+    ): Boolean {
+        // Validate email
+        if (!isValidEmail(email)) {
+            showToast("Invalid email address")
+            return false
+        }
+
+        // Other validations
         if (name.isBlank()) {
             showToast("Name cannot be empty")
             return false
         }
 
-        // Validate surname
         if (surname.isBlank()) {
             showToast("Surname cannot be empty")
             return false
         }
 
-        // Validate date of birth with a date format
+        // Validate date of birth
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         dateFormat.isLenient = false
         try {
@@ -120,13 +138,18 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         // Validate password
-        val passwordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[.!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$")
+        val passwordPattern =
+            Pattern.compile("^(?=.*[0-9])(?=.*[.!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$")
         if (!passwordPattern.matcher(password).matches()) {
             showToast("Password must be at least 8 characters including a number and a special character")
             return false
         }
 
         return true
+    }
+    private fun isValidEmail(email: String): Boolean {
+        val emailPattern = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")
+        return emailPattern.matcher(email).matches()
     }
 
     private fun isValidIdNumber(idNumber: String): Boolean {
@@ -140,9 +163,10 @@ class RegisterActivity : AppCompatActivity() {
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
     private fun configurePasswordVisibilityToggle() {
-        val passwordEditText: EditText = findViewById(R.id.password_edit_text)
-        val toggleButton: Button = findViewById(R.id.button_show_hide_password)
+        val passwordEditText = findViewById<EditText>(R.id.password_edit_text)
+        val toggleButton = findViewById<Button>(R.id.button_show_hide_password)
 
         var isPasswordVisible = false
 
@@ -156,6 +180,7 @@ class RegisterActivity : AppCompatActivity() {
             passwordEditText.setSelection(passwordEditText.text.length)
         }
     }
+
     private fun updatePasswordCriteriaIcons(password: String, icons: List<ImageView>) {
         val criteria = listOf(
             password.length >= 8,
@@ -168,4 +193,12 @@ class RegisterActivity : AppCompatActivity() {
             icon.setImageResource(if (meetsCriteria) R.drawable.ic_check_black else R.drawable.ic_cross_black)
         }
     }
-}
+        private fun setupLoginListener() {
+            val loginTextView = findViewById<TextView>(R.id.textView_login)
+            loginTextView.setOnClickListener {
+                // Start LoginActivity
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }

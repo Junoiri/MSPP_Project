@@ -10,6 +10,5 @@
         <item name="android:textAlignment">center</item> <!-- Text alignment -->
     </style>
 
-
     <color name="colorBlackTransparent">#7E0E0E0E</color>
 </resources>
