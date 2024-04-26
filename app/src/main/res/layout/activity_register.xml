@@ -77,100 +77,120 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/id_number_edit_text" />
 
-        <Button
-            android:id="@+id/button_show_hide_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/password_visibility_toggle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_visibility_off"
             android:layout_marginStart="10dp"
-            android:text="Show/Hide"
             app:layout_constraintBottom_toBottomOf="@id/password_edit_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/password_edit_text"
+            app:layout_constraintStart_toEndOf="@id/password_edit_text"
             app:layout_constraintTop_toTopOf="@id/password_edit_text" />
 
 
-        <ImageView
-            android:id="@+id/password_criteria_1_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_cross_black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/password_edit_text"/>
-
-        <TextView
-            android:id="@+id/password_criteria_1"
+        <!-- Linear Layout for Condition 1 with constraints -->
+        <LinearLayout
+            android:id="@+id/condition_1_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="At least 8 characters"
-            app:layout_constraintBottom_toBottomOf="@id/password_criteria_1_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/password_criteria_1_icon"
-            app:layout_constraintTop_toTopOf="@id/password_criteria_1_icon" />
-
-        <ImageView
-            android:id="@+id/password_criteria_2_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_cross_black"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/password_edit_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/password_criteria_1"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/password_criteria_2"
+            <ImageView
+                android:id="@+id/condition_1_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_cross_black" />
+
+            <TextView
+                android:id="@+id/condition_1_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At least 8 characters"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
+
+        <!-- Linear Layout for Condition 2 with constraints -->
+        <LinearLayout
+            android:id="@+id/condition_2_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="At least 1 number"
-            app:layout_constraintBottom_toBottomOf="@id/password_criteria_2_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/password_criteria_2_icon"
-            app:layout_constraintTop_toTopOf="@id/password_criteria_2_icon" />
-
-        <ImageView
-            android:id="@+id/password_criteria_3_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_cross_black"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/condition_1_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/password_criteria_2"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/password_criteria_3"
+            <ImageView
+                android:id="@+id/condition_2_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_cross_black" />
+
+            <TextView
+                android:id="@+id/condition_2_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At least 1 number"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
+
+        <!-- Linear Layout for Condition 3 with constraints -->
+        <LinearLayout
+            android:id="@+id/condition_3_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="At least 1 special character"
-            app:layout_constraintBottom_toBottomOf="@id/password_criteria_3_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/password_criteria_3_icon"
-            app:layout_constraintTop_toTopOf="@id/password_criteria_3_icon" />
-
-        <ImageView
-            android:id="@+id/password_criteria_4_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_cross_black"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/condition_2_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/password_criteria_3"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/password_criteria_4"
+            <ImageView
+                android:id="@+id/condition_3_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_cross_black" />
+
+            <TextView
+                android:id="@+id/condition_3_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At least 1 special character"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
+
+        <!-- Linear Layout for Condition 4 with constraints -->
+        <LinearLayout
+            android:id="@+id/condition_4_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="At least 1 uppercase letter"
-            app:layout_constraintBottom_toBottomOf="@id/password_criteria_4_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/password_criteria_4_icon"
-            app:layout_constraintTop_toTopOf="@id/password_criteria_4_icon" />
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/condition_3_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/condition_4_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_cross_black" />
+
+            <TextView
+                android:id="@+id/condition_4_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At least 1 uppercase letter"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/register_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Register"
-            app:layout_constraintTop_toBottomOf="@id/password_criteria_4"
+            app:layout_constraintTop_toBottomOf="@id/condition_4_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintWidth_percent="0.9"/>

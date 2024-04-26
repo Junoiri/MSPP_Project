@@ -5,9 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mspp_project.R
@@ -16,9 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.HashMap
-
-// TODO: Change the data storing method from Firestore to php
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -29,8 +23,10 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var idNumberEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var registerButton: Button
+    private lateinit var passwordVisibilityToggle: ImageView
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var icons: List<ImageView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,106 +36,14 @@ class RegisterActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Initialize UI elements
+        // Initialize UI elements and set up listeners
         initializeViews()
-
-        // Initialize Register button
-        registerButton = findViewById(R.id.register_button)
-
-        // Password criteria icons
-        val icons = listOf(
-            findViewById<ImageView>(R.id.password_criteria_1_icon),
-            findViewById<ImageView>(R.id.password_criteria_2_icon),
-            findViewById<ImageView>(R.id.password_criteria_3_icon),
-            findViewById<ImageView>(R.id.password_criteria_4_icon)
-        )
-
-
-        // Password visibility toggle
         configurePasswordVisibilityToggle()
-
-        // TextWatcher to check password criteria
-        passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updatePasswordCriteriaIcons(s.toString(), icons)
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        // Setup listeners
-        dobEditText.setOnClickListener { showDatePicker() }
-
-        // Call the setupLoginListener method to ensure listeners are set up
+        setRegisterButtonListener()
+        setupTextWatchers()
         setupLoginListener()
-
-        // Initialize other UI elements and listeners
-        registerButton.setOnClickListener { registerUser() }
+        setupDatePicker()
     }
-
-    private fun registerUser() {
-        val email = emailEditText.text.toString().trim()
-        val password = passwordEditText.text.toString().trim()
-        val name = nameEditText.text.toString().trim()
-        val surname = surnameEditText.text.toString().trim()
-        val dob = dobEditText.text.toString().trim()
-        val idNumber = idNumberEditText.text.toString().trim()
-
-        if (validateInput(email, name, surname, dob, idNumber, password)) {
-            Log.d("RegisterActivity", "Input validation successful")
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d("RegisterActivity", "User registration successful")
-                        val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
-                        Log.d("RegisterActivity", "Current user ID: $userId")
-                        val userData = hashMapOf(
-                            "userId" to userId,
-                            "email" to email,
-                            "name" to name,
-                            "surname" to surname,
-                            "dob" to dob,
-                            "idNumber" to idNumber
-                        )
-                        saveUserToFirestore(userData)
-                    } else {
-                        Log.e("RegisterActivity", "Registration failed", task.exception)
-                        showToast("Registration failed: ${task.exception?.localizedMessage}")
-                    }
-                }
-        }
-    }
-
-    private fun saveUserToFirestore(userData: HashMap<String, String>) {
-        val documentId = userData["userId"].toString()
-        Log.d("RegisterActivity", "Document ID: $documentId") // Verify document ID
-
-        db.collection("Users").document(documentId)
-            .set(userData)
-            .addOnSuccessListener {
-                Log.d("RegisterActivity", "User data saved to Firestore successfully")
-                Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show()
-                navigateToLoginActivity()
-            }
-            .addOnFailureListener { e ->
-                Log.e("RegisterActivity", "Error saving to Firestore", e)
-                Toast.makeText(this, "Error saving user: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-            }
-    }
-
-
-    private fun navigateToLoginActivity() {
-        Log.d("RegisterActivity", "Navigating to LoginActivity") // Log when navigation is triggered
-
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent) // Start the LoginActivity
-
-        Log.d("RegisterActivity", "LoginActivity started") // Confirm the activity has started
-        finish() // Close the current activity to prevent back navigation
-    }
-
 
     private fun initializeViews() {
         emailEditText = findViewById(R.id.email_edit_text)
@@ -149,6 +53,72 @@ class RegisterActivity : AppCompatActivity() {
         idNumberEditText = findViewById(R.id.id_number_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
         registerButton = findViewById(R.id.register_button)
+        passwordVisibilityToggle = findViewById(R.id.password_visibility_toggle)
+
+        // Initialize password criteria icons
+        icons = listOf(
+                findViewById<ImageView>(R.id.condition_1_icon),
+        findViewById<ImageView>(R.id.condition_2_icon),
+        findViewById<ImageView>(R.id.condition_3_icon),
+        findViewById<ImageView>(R.id.condition_4_icon)
+        )
+    }
+
+    private fun configurePasswordVisibilityToggle() {
+        passwordVisibilityToggle.setOnClickListener { togglePasswordVisibility() }
+    }
+
+    private fun togglePasswordVisibility() {
+        if (passwordEditText.inputType == 129) {
+            passwordEditText.inputType = 144
+            passwordVisibilityToggle.setImageResource(R.drawable.ic_visibility_on)
+        } else {
+            passwordEditText.inputType = 129
+            passwordVisibilityToggle.setImageResource(R.drawable.ic_visibility_off)
+        }
+        passwordEditText.setSelection(passwordEditText.text.length)
+    }
+
+    private fun setRegisterButtonListener() {
+        registerButton.setOnClickListener { registerUser() }
+    }
+
+    private fun setupTextWatchers() {
+        passwordEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkPasswordRequirements(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun checkPasswordRequirements(password: String) {
+        val specialCharacters = "!@#\$%^&*()_+-=<>?/\\|{}[]:;\"'"
+
+        icons[0].setImageResource(
+            if (password.length >= 8) R.drawable.ic_check_black else R.drawable.ic_cross_black
+        )
+        icons[1].setImageResource(
+            if (password.any { it.isUpperCase() }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+        )
+        icons[2].setImageResource(
+            if (password.any { it.isDigit() }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+        )
+        icons[3].setImageResource(
+            if (password.any { it in specialCharacters }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+        )
+    }
+
+    private fun setupLoginListener() {
+        val loginTextView = findViewById<TextView>(R.id.textView_login)
+        loginTextView.setOnClickListener { navigateToLoginActivity() }
+    }
+
+    private fun setupDatePicker() {
+        dobEditText.setOnClickListener { showDatePicker() }
     }
 
     private fun showDatePicker() {
@@ -177,6 +147,53 @@ class RegisterActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
+    private fun registerUser() {
+        val email = emailEditText.text.toString().trim()
+        val name = nameEditText.text.toString().trim()
+        val surname = surnameEditText.text.toString().trim()
+        val dob = dobEditText.text.toString().trim()
+        val idNumber = idNumberEditText.text.toString().trim()
+        val password = passwordEditText.text.toString().trim()
+
+        if (validateInput(email, name, surname, dob, idNumber, password)) {
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+                        val userData = hashMapOf(
+                            "userId" to userId,
+                            "email" to email,
+                            "name" to name,
+                            "surname" to surname,
+                            "dob" to dob,
+                            "idNumber" to idNumber
+                        )
+                        saveUserToFirestore(userData)
+                    } else {
+                        showToast("Registration failed: ${task.exception?.localizedMessage}")
+                    }
+                }
+        }
+    }
+
+    private fun saveUserToFirestore(userData: HashMap<String, String>) {
+        db.collection("Users").document(userData["userId"].toString())
+            .set(userData)
+            .addOnSuccessListener {
+                showToast("User registered successfully")
+                navigateToLoginActivity()
+            }
+            .addOnFailureListener { e ->
+                showToast("Error saving user: ${e.localizedMessage}")
+            }
+    }
+
+    private fun navigateToLoginActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private fun validateInput(
         email: String,
         name: String,
@@ -185,103 +202,62 @@ class RegisterActivity : AppCompatActivity() {
         idNumber: String,
         password: String
     ): Boolean {
-        if (!isValidEmail(email)) {
-            showToast("Invalid email address")
-            return false
+        return when {
+            !isValidEmail(email) -> {
+                showToast("Invalid email address")
+                false
+            }
+            name.isBlank() -> {
+                showToast("Name cannot be empty")
+                false
+            }
+            surname.isBlank() -> {
+                showToast("Surname cannot be empty")
+                false
+            }
+            !isValidDate(dob) -> {
+                showToast("Invalid date of birth")
+                false
+            }
+            !isValidIdNumber(idNumber) -> {
+                showToast("Invalid ID Number")
+                false
+            }
+            !isValidPassword(password) -> {
+                showToast("Password must be at least 8 characters, contain a number, a special character, and an uppercase letter")
+                false
+            }
+            else -> true
         }
-
-        if (name.isBlank()) {
-            showToast("Name cannot be empty")
-            return false
-        }
-
-        if (surname.isBlank()) {
-            showToast("Surname cannot be empty")
-            return false
-        }
-
-        if (!isValidDate(dob)) {
-            showToast("Enter a valid date of birth (yyyy-MM-dd)")
-            return false
-        }
-
-        if (!isValidIdNumber(idNumber)) {
-            showToast("Invalid ID Number")
-            return false
-        }
-
-        if (!isValidPassword(password)) {
-            showToast("Password must be at least 8 characters with a number and a special character")
-            return false
-        }
-
-        return true
     }
 
     private fun isValidEmail(email: String): Boolean {
-        val emailPattern = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")
-        return emailPattern.matcher(email).matches()
+        val pattern = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")
+        return pattern.matcher(email).matches()
     }
 
     private fun isValidDate(date: String): Boolean {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        dateFormat.isLenient = false
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        sdf.isLenient = false
         return try {
-            dateFormat.parse(date) != null
+            sdf.parse(date) != null
         } catch (e: Exception) {
             false
         }
     }
 
     private fun isValidIdNumber(idNumber: String): Boolean {
-        return Pattern.matches("\\d{11}", idNumber)
+        return idNumber.matches("\\d{11}".toRegex())
     }
 
     private fun isValidPassword(password: String): Boolean {
-        val passwordPattern =
-            Pattern.compile("^(?=.*[0-9])(?=.*[.!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$")
-        return passwordPattern.matcher(password).matches()
+        return password.length >= 8 &&
+                password.any { it.isUpperCase() } &&
+                password.any { it.isDigit() } &&
+                password.any { "!@#\$%^&*()_+-=<>?/\\|{}[]:;\"'".contains(it) }
     }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun configurePasswordVisibilityToggle() {
-        val passwordEditText = findViewById<EditText>(R.id.password_edit_text)
-        val toggleButton = findViewById<Button>(R.id.button_show_hide_password)
-
-        var isPasswordVisible = false
-
-        toggleButton.setOnClickListener {
-            isPasswordVisible = !isPasswordVisible
-            passwordEditText.transformationMethod = if (isPasswordVisible) {
-                HideReturnsTransformationMethod.getInstance()
-            } else {
-                PasswordTransformationMethod.getInstance()
-            }
-            passwordEditText.setSelection(passwordEditText.text.length)
-        }
-    }
-
-    private fun updatePasswordCriteriaIcons(password: String, icons: List<ImageView>) {
-        val criteria = listOf(
-            password.length >= 8,
-            password.any { it.isDigit() },
-            password.any { !it.isLetterOrDigit() },
-            password.any { it.isUpperCase() }
-        )
-
-        criteria.zip(icons).forEach { (meetsCriteria, icon) ->
-            icon.setImageResource(if (meetsCriteria) R.drawable.ic_check_black else R.drawable.ic_cross_black)
-        }
-    }
-
-    private fun setupLoginListener() {
-        val loginTextView = findViewById<TextView>(R.id.textView_login)
-        loginTextView.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
     }
 }

@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import authenticators.EmailAuthManager
 import com.example.mspp_project.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class LoginActivity : AppCompatActivity() {
 
@@ -23,6 +22,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var registerTextView: TextView
     private lateinit var toggleButton: Button
+    private lateinit var forgotPasswordTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +38,15 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.login_button)
         registerTextView = findViewById(R.id.textView_register)
         toggleButton = findViewById(R.id.button_show_hide_password)
+        forgotPasswordTextView = findViewById(R.id.textView_forgot_password)
 
         configurePasswordVisibilityToggle(passwordEditText, toggleButton)
 
         loginButton.setOnClickListener { loginWithEmail() }
 
         registerTextView.setOnClickListener { navigateToRegisterActivity() }
+
+        forgotPasswordTextView.setOnClickListener { navigateToForgotPasswordActivity() }
     }
 
     private fun loginWithEmail() {
@@ -81,6 +84,11 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish() // Prevents returning to the login activity
+    }
+
+    private fun navigateToForgotPasswordActivity() {
+        val intent = Intent(this, ForgotPasswordActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showToast(message: String) {
