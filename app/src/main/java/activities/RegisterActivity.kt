@@ -7,6 +7,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import authenticators.FacebookAuthManager
+import authenticators.GoogleAuthManager
 import com.example.mspp_project.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,9 +30,16 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var icons: List<ImageView>
 
+    private lateinit var googleAuthManager: GoogleAuthManager
+    private lateinit var facebookAuthManager: FacebookAuthManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        googleAuthManager = GoogleAuthManager(this, getString(R.string.client_id))
+        facebookAuthManager = FacebookAuthManager(this)
+
 
         // Initialize Firebase and Firestore
         auth = FirebaseAuth.getInstance()
@@ -40,9 +49,12 @@ class RegisterActivity : AppCompatActivity() {
         initializeViews()
         configurePasswordVisibilityToggle()
         setRegisterButtonListener()
+        setupGoogleSignInButtonListener()
+        setupFacebookSignInButtonListener()
         setupTextWatchers()
         setupLoginListener()
         setupDatePicker()
+
     }
 
     private fun initializeViews() {
@@ -57,10 +69,10 @@ class RegisterActivity : AppCompatActivity() {
 
         // Initialize password criteria icons
         icons = listOf(
-                findViewById<ImageView>(R.id.condition_1_icon),
-        findViewById<ImageView>(R.id.condition_2_icon),
-        findViewById<ImageView>(R.id.condition_3_icon),
-        findViewById<ImageView>(R.id.condition_4_icon)
+            findViewById<ImageView>(R.id.condition_1_icon),
+            findViewById<ImageView>(R.id.condition_2_icon),
+            findViewById<ImageView>(R.id.condition_3_icon),
+            findViewById<ImageView>(R.id.condition_4_icon)
         )
     }
 
@@ -82,6 +94,24 @@ class RegisterActivity : AppCompatActivity() {
     private fun setRegisterButtonListener() {
         registerButton.setOnClickListener { registerUser() }
     }
+
+    private fun setupGoogleSignInButtonListener() {
+        val signInButton: ImageView = findViewById(R.id.imageView_option1)
+        signInButton.setOnClickListener {
+            googleAuthManager.signIn()
+        }
+    }
+
+    private fun setupFacebookSignInButtonListener() {
+    val signInButton: ImageView = findViewById(R.id.imageView_option2)
+    signInButton.setOnClickListener {
+        facebookAuthManager.signIn()
+    }
+}
+
+private fun handleFacebookSignInResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    facebookAuthManager.onActivityResult(requestCode, resultCode, data)
+}
 
     private fun setupTextWatchers() {
         passwordEditText.addTextChangedListener(object : TextWatcher {
@@ -207,26 +237,32 @@ class RegisterActivity : AppCompatActivity() {
                 showToast("Invalid email address")
                 false
             }
+
             name.isBlank() -> {
                 showToast("Name cannot be empty")
                 false
             }
+
             surname.isBlank() -> {
                 showToast("Surname cannot be empty")
                 false
             }
+
             !isValidDate(dob) -> {
                 showToast("Invalid date of birth")
                 false
             }
+
             !isValidIdNumber(idNumber) -> {
                 showToast("Invalid ID Number")
                 false
             }
+
             !isValidPassword(password) -> {
                 showToast("Password must be at least 8 characters, contain a number, a special character, and an uppercase letter")
                 false
             }
+
             else -> true
         }
     }
@@ -259,5 +295,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        handleFacebookSignInResult(requestCode, resultCode, data)
     }
 }

@@ -23,20 +23,4 @@ class EmailAuthManager(private val auth: FirebaseAuth, private val context: Cont
                 }
             }
     }
-
-    // Function to send a password reset email - TODO
-    fun sendPasswordResetEmail(email: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-        auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onFailure("Failed to send reset email: ${task.exception?.localizedMessage}")
-                }
-            }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
 }

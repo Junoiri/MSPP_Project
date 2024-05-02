@@ -1,15 +1,19 @@
 package activities
 
+import activities.dynamicLinking.ForgotPasswordActivity2
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import authenticators.EmailAuthManager
+import authenticators.FacebookAuthManager
+import authenticators.GoogleAuthManager
 import com.example.mspp_project.R
 import com.google.firebase.auth.FirebaseAuth
 
@@ -24,13 +28,22 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var toggleButton: Button
     private lateinit var forgotPasswordTextView: TextView
 
+
+    private lateinit var facebookAuthManager: FacebookAuthManager
+    private lateinit var googleAuthManager: GoogleAuthManager
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Initialize FirebaseAuth and EmailAuthManager
+        // Initialize Authentication
         auth = FirebaseAuth.getInstance()
         emailAuthManager = EmailAuthManager(auth, this)
+
+
+        initializeAuthManagers()
+        setupSignInButtons()
 
         // Initialize views
         emailEditText = findViewById(R.id.email_edit_text)
@@ -39,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
         registerTextView = findViewById(R.id.textView_register)
         toggleButton = findViewById(R.id.button_show_hide_password)
         forgotPasswordTextView = findViewById(R.id.textView_forgot_password)
+
 
         configurePasswordVisibilityToggle(passwordEditText, toggleButton)
 
@@ -87,6 +101,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToForgotPasswordActivity() {
+        //NOTE: Here, we can add '2' at the end to use the dynamic linking approach.
         val intent = Intent(this, ForgotPasswordActivity::class.java)
         startActivity(intent)
     }
@@ -95,7 +110,10 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun configurePasswordVisibilityToggle(passwordEditText: EditText, toggleButton: Button) {
+    private fun configurePasswordVisibilityToggle(
+        passwordEditText: EditText,
+        toggleButton: Button
+    ) {
         var isPasswordVisible = false
 
         toggleButton.setOnClickListener {
@@ -107,5 +125,32 @@ class LoginActivity : AppCompatActivity() {
             }
             passwordEditText.setSelection(passwordEditText.text.length)
         }
+    }
+
+    private fun initializeAuthManagers() {
+        val clientId = getString(R.string.client_id)
+        facebookAuthManager = FacebookAuthManager(this)
+        googleAuthManager = GoogleAuthManager(this, clientId)
+    }
+
+    private fun setupSignInButtons() {
+        val googleSignInButton: ImageView = findViewById(R.id.google_sign_in_button)
+        googleSignInButton.setOnClickListener {
+            googleAuthManager.signIn()
+        }
+
+        val facebookSignInButton: ImageView = findViewById(R.id.facebook_sign_in_button)
+        facebookSignInButton.setOnClickListener {
+            facebookAuthManager.signIn()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        facebookAuthManager.onActivityResult(requestCode, resultCode, data)
     }
 }

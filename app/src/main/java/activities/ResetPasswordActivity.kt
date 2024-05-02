@@ -131,4 +131,10 @@ class ResetPasswordActivity : AppCompatActivity() {
             if (password.any { it in specialCharacters }) R.drawable.ic_check_black else R.drawable.ic_cross_black
         )
     }
+    override fun onResume() {
+    super.onResume()
+    val intent = Intent(this, LoginActivity::class.java)
+    startActivity(intent)
+    finish()
+}
 }

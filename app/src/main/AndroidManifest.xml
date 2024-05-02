@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,45 +16,71 @@
         android:theme="@style/Theme.MSPP_Project"
         tools:targetApi="31">
 
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"/>
+
+        <activity
+            android:name="activities.dynamicLinking.ResetPasswordActivity2"
+            android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="mspp.page.link"
+                    android:pathPrefix="/resetPassword"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="activities.dynamicLinking.ForgotPasswordActivity2"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="mspp.page.link"
+                    android:path="/resetPassword"
+                    android:scheme="http" />
+            </intent-filter>
+
+        </activity>
+
         <!-- Splash Activity with MAIN and LAUNCHER -->
         <activity
             android:name="activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Start Activity -->
+        </activity> <!-- Start Activity -->
         <activity
             android:name="activities.StartActivity"
-            android:exported="true" />
-
-        <!-- Login Activity -->
+            android:exported="true" /> <!-- Login Activity -->
         <activity
             android:name="activities.LoginActivity"
-            android:exported="true" />
-
-        <!-- Main Activity -->
+            android:exported="true" /> <!-- Main Activity -->
         <activity
             android:name="activities.MainActivity"
-            android:exported="true" />
-
-        <!-- Register Activity -->
+            android:exported="true" /> <!-- Register Activity -->
         <activity
             android:name="activities.RegisterActivity"
-            android:exported="true" />
-
-        <!-- Forgot Password Activity -->
+            android:exported="true" /> <!-- Forgot Password Activity -->
         <activity
             android:name="activities.ForgotPasswordActivity"
-            android:exported="true" />
-
-        <!-- Reset Password Activity -->
+            android:exported="true" /> <!-- Reset Password Activity -->
         <activity
             android:name="activities.ResetPasswordActivity"
             android:exported="true" />
-
     </application>
+
 </manifest>

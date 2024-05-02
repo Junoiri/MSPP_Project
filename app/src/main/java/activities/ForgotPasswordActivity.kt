@@ -16,6 +16,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var editTextEmail: EditText
     private lateinit var buttonRecoverPassword: Button
     private lateinit var mAuth: FirebaseAuth
+    private var isResumed = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,5 +74,20 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show() // Notify the user of failure
             }
+    }
+    override fun onPause() {
+        super.onPause()
+        // Set the flag to true when the activity is paused
+        isResumed = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // If the activity is being resumed, navigate to the LoginActivity
+        if (isResumed) {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }
