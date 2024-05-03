@@ -15,6 +15,9 @@ import utils.SnackbarHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.util.Log
 
 //TODO: Implement the hints for input fields, block the email field from being edited
 
@@ -29,32 +32,38 @@ class UserProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_user_profile)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         initializeViews()
+
         setupClickListeners()
+
+        setActivityName()
     }
 
     private fun initializeViews() {
+
         nameEditText = findViewById(R.id.name_edit_text)
         surnameEditText = findViewById(R.id.surname_edit_text)
         emailEditText = findViewById(R.id.email_edit_text)
         dobEditText = findViewById(R.id.dob_edit_text)
         idNumberEditText = findViewById(R.id.id_number_edit_text)
         saveButton = findViewById(R.id.save_button)
-        backButton = findViewById(R.id.back_button)
+
+        val toolbarLayout = findViewById<LinearLayout>(R.id.toolbar)
+        backButton = toolbarLayout.findViewById(R.id.back_button)
     }
 
     private fun setupClickListeners() {
         backButton.setOnClickListener { finish() }
         saveButton.setOnClickListener { saveChanges() }
     }
+
+    private fun setActivityName() {
+    val toolbarLayout = findViewById<LinearLayout>(R.id.toolbar)
+    val titleTextView: TextView = toolbarLayout.findViewById(R.id.toolbar_title)
+    titleTextView.text = "User Profile"
+}
 
     private fun saveChanges() {
         val name = nameEditText.text.toString()
@@ -131,10 +140,10 @@ class UserProfileActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-    SnackbarHelper.showSaveChangesSnackbar(
-        this,
-        yesAction = { saveChanges() },
-        noAction = { super.onBackPressed() }
-    )
-}
+        SnackbarHelper.showSaveChangesSnackbar(
+            this,
+            yesAction = { saveChanges() },
+            noAction = { super.onBackPressed() }
+        )
+    }
 }

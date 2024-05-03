@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var registerTextView: TextView
     private lateinit var toggleButton: Button
     private lateinit var forgotPasswordTextView: TextView
+    private lateinit var progressBar: ProgressBar
 
 
     private lateinit var facebookAuthManager: FacebookAuthManager
@@ -41,10 +44,6 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         emailAuthManager = EmailAuthManager(auth, this)
 
-
-        initializeAuthManagers()
-        setupSignInButtons()
-
         // Initialize views
         emailEditText = findViewById(R.id.email_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
@@ -52,7 +51,10 @@ class LoginActivity : AppCompatActivity() {
         registerTextView = findViewById(R.id.textView_register)
         toggleButton = findViewById(R.id.button_show_hide_password)
         forgotPasswordTextView = findViewById(R.id.textView_forgot_password)
+        progressBar = findViewById(R.id.progressBar)
 
+        initializeAuthManagers()
+        setupSignInButtons()
 
         configurePasswordVisibilityToggle(passwordEditText, toggleButton)
 
@@ -136,11 +138,19 @@ class LoginActivity : AppCompatActivity() {
     private fun setupSignInButtons() {
         val googleSignInButton: ImageView = findViewById(R.id.google_sign_in_button)
         googleSignInButton.setOnClickListener {
+            // Show ProgressBar
+            progressBar.visibility = View.VISIBLE
+
+            // Start Google sign-in process
             googleAuthManager.signIn()
         }
 
         val facebookSignInButton: ImageView = findViewById(R.id.facebook_sign_in_button)
         facebookSignInButton.setOnClickListener {
+            // Show ProgressBar
+            progressBar.visibility = View.VISIBLE
+
+            // Start Facebook sign-in process
             facebookAuthManager.signIn()
         }
     }

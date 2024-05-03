@@ -74,5 +74,7 @@ dependencies {
     implementation("com.facebook.android:facebook-login:13.0.1")
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
 
+    //Drawer menu
+    implementation("com.google.android.material:material:1.11.0")
 
 }

@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:text="User Profile"
+            android:text="Activity Name"
             android:padding="15dp"
             android:textColor="@android:color/white"
             android:textSize="30sp"

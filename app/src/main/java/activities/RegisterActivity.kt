@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import authenticators.FacebookAuthManager
@@ -29,6 +30,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var icons: List<ImageView>
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var googleAuthManager: GoogleAuthManager
     private lateinit var facebookAuthManager: FacebookAuthManager
@@ -39,7 +41,6 @@ class RegisterActivity : AppCompatActivity() {
 
         googleAuthManager = GoogleAuthManager(this, getString(R.string.client_id))
         facebookAuthManager = FacebookAuthManager(this)
-
 
         // Initialize Firebase and Firestore
         auth = FirebaseAuth.getInstance()
@@ -66,6 +67,7 @@ class RegisterActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.password_edit_text)
         registerButton = findViewById(R.id.register_button)
         passwordVisibilityToggle = findViewById(R.id.password_visibility_toggle)
+        progressBar = findViewById(R.id.progressBar)
 
         // Initialize password criteria icons
         icons = listOf(
@@ -98,20 +100,22 @@ class RegisterActivity : AppCompatActivity() {
     private fun setupGoogleSignInButtonListener() {
         val signInButton: ImageView = findViewById(R.id.imageView_option1)
         signInButton.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
             googleAuthManager.signIn()
         }
     }
 
     private fun setupFacebookSignInButtonListener() {
-    val signInButton: ImageView = findViewById(R.id.imageView_option2)
-    signInButton.setOnClickListener {
-        facebookAuthManager.signIn()
+        val signInButton: ImageView = findViewById(R.id.imageView_option2)
+        signInButton.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
+            facebookAuthManager.signIn()
+        }
     }
-}
 
-private fun handleFacebookSignInResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    facebookAuthManager.onActivityResult(requestCode, resultCode, data)
-}
+    private fun handleFacebookSignInResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        facebookAuthManager.onActivityResult(requestCode, resultCode, data)
+    }
 
     private fun setupTextWatchers() {
         passwordEditText.addTextChangedListener(object : TextWatcher {
@@ -296,6 +300,7 @@ private fun handleFacebookSignInResult(requestCode: Int, resultCode: Int, data: 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
