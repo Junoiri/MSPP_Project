@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MSPP_Project</string>
+    <string name="client_id">541244659358-p7ftlupg8h0ih9fv269s3vfru5phb73q.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">440506798627355</string>
+    <string name="facebook_client_token">8a07546a391d97be9af96eee7a5d2ec9</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>

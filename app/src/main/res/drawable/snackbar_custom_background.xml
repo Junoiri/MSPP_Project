@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Colored strip on the left (10% of the width) -->
+    <item android:width="8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorBlackTransparent" /> <!-- Replace with your desired color -->
+        </shape>
+    </item>
+
+    <!-- Snackbar background with rounded corners -->
+    <item android:left="8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorBlackTransparent" />
+            <corners android:radius="30dp" />
+        </shape>
+    </item>
+</layer-list>
