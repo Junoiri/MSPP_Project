@@ -1,11 +1,11 @@
 package activities
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
 import com.example.mspp_project.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerMenuHandler: DrawerMenuHandler
@@ -19,6 +19,17 @@ class MainActivity : AppCompatActivity() {
         toolbar.setNavigationIcon(R.drawable.ic_menu) // Set the menu icon
 
         drawerMenuHandler = DrawerMenuHandler(this, toolbar, R.string.open, R.string.close)
+        setupFabAddNew()
+
+    }
+
+    private fun setupFabAddNew() {
+        //FloatingActionButton click listener
+        val fabAddNew: FloatingActionButton = findViewById(R.id.fab_add_new)
+        fabAddNew.setOnClickListener {
+            val intent = Intent(this, AddVaccinationActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

@@ -77,4 +77,8 @@ dependencies {
     //Drawer menu
     implementation("com.google.android.material:material:1.11.0")
 
+    //Number picker
+    implementation("io.github.ShawnLin013:number-picker:2.4.13")
+
+
 }

@@ -45,7 +45,7 @@
                     android:textSize="18sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/setting_switch_1"
+                    android:id="@+id/notification_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
