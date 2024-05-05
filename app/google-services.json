@@ -12,7 +12,20 @@
           "package_name": "com.example.mspp_project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "541244659358-qbchgtd75ot2im6jok3joad0ersja5kf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mspp_project",
+            "certificate_hash": "fe58eafa1d095a69eb83e4f54f052d315ece7f18"
+          }
+        },
+        {
+          "client_id": "541244659358-p7ftlupg8h0ih9fv269s3vfru5phb73q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDhID7Q4aWiPiCFseUFqAzE32ykfp4Cstg"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541244659358-p7ftlupg8h0ih9fv269s3vfru5phb73q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
