@@ -19,6 +19,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    configurations {
+    all {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+    }
+}
 
     buildTypes {
         release {
@@ -66,8 +71,6 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1") // Firebase Authentication with Kotlin extensions
 
-    implementation(platform("com.google.firebase:firebase-bom:32.8.1")) // Firebase BOM
-    implementation("com.google.firebase:firebase-auth-ktx") // Firebase Authentication with Kotlin extensions
     implementation("com.sun.mail:android-mail:1.6.5")
     implementation("com.sun.mail:android-activation:1.6.5")
 
