@@ -8,73 +8,90 @@ import kotlinx.coroutines.withContext
 object UserSF {
 
     suspend fun insertUser(user: User, context: Context) {
-        withContext(Dispatchers.IO) {
-            val connection = DConnection.getConnection()
-            val userQueries = UserQueries(connection)
-            val result = userQueries.insertUser(user)
-            connection.close()
-
+        val connection = DConnection.getConnection()
+        try {
+            withContext(Dispatchers.IO) {
+                val userQueries = UserQueries(connection)
+                val result = userQueries.insertUser(user)
+                result
+            }
             withContext(Dispatchers.Main) {
-                if (result) {
-                    Toast.makeText(context, "User created", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "User creation failed", Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(context, "User created", Toast.LENGTH_SHORT).show()
             }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } finally {
+            connection.close()
         }
     }
 
-suspend fun deleteUser(user_id: Int, context: Context) {
-    withContext(Dispatchers.IO) {
+    suspend fun deleteUser(user_id: Int, context: Context) {
         val connection = DConnection.getConnection()
-        val userQueries = UserQueries(connection)
-        val result = userQueries.deleteUser(user_id)
-        connection.close()
-
-        withContext(Dispatchers.Main) {
-            if (result) {
+        try {
+            withContext(Dispatchers.IO) {
+                val userQueries = UserQueries(connection)
+                val result = userQueries.deleteUser(user_id)
+                result
+            }
+            withContext(Dispatchers.Main) {
                 Toast.makeText(context, "User deleted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "User deletion failed", Toast.LENGTH_SHORT).show()
             }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } finally {
+            connection.close()
         }
     }
 
-}
-suspend fun updateEmail(user_id: Int, user: User, context: Context) {
-    withContext(Dispatchers.IO) {
+    suspend fun updateEmail(user_id: Int, user: User, context: Context) {
         val connection = DConnection.getConnection()
-        val userQueries = UserQueries(connection)
-        val result = userQueries.updateUser(user_id, user)
-        connection.close()
-
-        withContext(Dispatchers.Main) {
-            if (result) {
+        try {
+            withContext(Dispatchers.IO) {
+                val userQueries = UserQueries(connection)
+                val result = userQueries.updateUser(user_id, user)
+                result
+            }
+            withContext(Dispatchers.Main) {
                 Toast.makeText(context, "User updated", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "User update failed", Toast.LENGTH_SHORT).show()
             }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } finally {
+            connection.close()
         }
     }
-}
 
-suspend fun getUser(user_id: Int): User? {
-    return withContext(Dispatchers.IO) {
+    suspend fun getUser(user_id: Int): User? {
         val connection = DConnection.getConnection()
-        val userQueries = UserQueries(connection)
-        val result = userQueries.getUser(user_id)
-        connection.close()
-        result
+        return try {
+            withContext(Dispatchers.IO) {
+                val userQueries = UserQueries(connection)
+                userQueries.getUser(user_id)
+            }
+        } catch (e: Exception) {
+            null
+        } finally {
+            connection.close()
+        }
     }
-}
-suspend fun getAllUsers(): Set<User?>? {
-    return withContext(Dispatchers.IO) {
-        val connection = DConnection.getConnection()
-        val userQueries = UserQueries(connection)
-        val result = userQueries.getAllUsers()
-        connection.close()
 
-        result
+    suspend fun getAllUsers(): Set<User?>? {
+        val connection = DConnection.getConnection()
+        return try {
+            withContext(Dispatchers.IO) {
+                val userQueries = UserQueries(connection)
+                userQueries.getAllUsers()
+            }
+        } catch (e: Exception) {
+            null
+        } finally {
+            connection.close()
+        }
     }
-}
 }

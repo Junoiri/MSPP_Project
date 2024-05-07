@@ -1,36 +1,23 @@
 package db.user
-import java.security.MessageDigest
 import java.sql.Connection
 import java.sql.ResultSet
 
 class UserQueries(private val connection: Connection): UserDAO{
 
     override fun insertUser(user: User): Boolean {
-        val query = "{CALL insertUser(?,?,?,?,?)}"
-        val callableStatement= connection.prepareCall(query)
+        val query = "{CALL insertUser(?,?,?,?,?,?)}"
+        val callableStatement = connection.prepareCall(query)
 
         user.user_id?.let { callableStatement.setInt(1, it) }
-        callableStatement.setString(2,user.name)
-        callableStatement.setString(3,user.surname)
-        callableStatement.setString(4,user.email)
-        callableStatement.setDate(5,user.date_of_birth)
-
-        val hashedPassword = user.password?.let {
-            hash(it)
-        } ?: ""
-
-        callableStatement.setString(6, hashedPassword)
+        callableStatement.setString(2, user.name)
+        callableStatement.setString(3, user.surname)
+        callableStatement.setString(4, user.email)
+        callableStatement.setDate(5, user.date_of_birth)
+        user.password_id?.let { callableStatement.setInt(6, it) }
 
         val result = !callableStatement.execute()
         callableStatement.close()
         return result
-    }
-
-    private fun hash(input: String): String {
-        val bytes = MessageDigest
-            .getInstance("SHA-256")
-            .digest(input.toByteArray())
-        return printHexBinary(bytes).toUpperCase()
     }
 
     private fun printHexBinary(data: ByteArray): String {
@@ -78,11 +65,11 @@ override fun getUser(user_id: Int): User? {
     override fun updateUser(user_id: Int, user: User): Boolean {
         val query = "{CALL updateUser(?,?,?,?,?)}"
         val callableStatement = connection.prepareCall(query)
-        callableStatement.setString(1, user.name)
-        callableStatement.setString(2, user.surname)
-        callableStatement.setString(3, user.email)
-        callableStatement.setDate(4, user.date_of_birth)
-        callableStatement.setString(5, user.password)
+        callableStatement.setInt(1, user_id)
+        callableStatement.setString(2, user.name)
+        callableStatement.setString(3, user.surname)
+        callableStatement.setString(4, user.email)
+        callableStatement.setDate(5, user.date_of_birth)
 
         return callableStatement.executeUpdate() > 0
     }
