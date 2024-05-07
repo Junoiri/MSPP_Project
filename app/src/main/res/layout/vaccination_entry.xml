@@ -1,0 +1,155 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- The part of the entry that is always visible -->
+    <LinearLayout
+        android:id="@+id/always_visible_part"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Collapsed state -->
+        <LinearLayout
+            android:id="@+id/collapsed_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/vaccine_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/date_administrated_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date Administrated: "
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/date_administrated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- The part of the entry that expands/collapses -->
+    <LinearLayout
+        android:id="@+id/expandable_part"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Expanded state -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/next_dose_due_date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next Dose Due Date: "
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/next_dose_due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/manufacturer_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manufacturer: "
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/manufacturer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dose_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dose: "
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/dose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/edit_button"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/holo_purple"
+                    android:contentDescription="edit"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_edit" />
+
+                <ImageButton
+                    android:id="@+id/delete_button"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/holo_purple"
+                    android:contentDescription="delete"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_trash" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"
+        android:padding="5dp" />
+</LinearLayout>

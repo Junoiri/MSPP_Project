@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_menu) // Set the menu icon
+        toolbar.setNavigationIcon(R.drawable.ic_menu) // Set the font icon
 
         drawerMenuHandler = DrawerMenuHandler(this, toolbar, R.string.open, R.string.close)
         setupFabAddNew()

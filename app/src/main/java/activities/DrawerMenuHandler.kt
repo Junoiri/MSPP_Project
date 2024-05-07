@@ -24,12 +24,13 @@ class DrawerMenuHandler(
 
 
     init {
-        setupDrawerMenu()
-        setupDrawerListener()
-        setupCloseButton()
-        setupSettingsButton()
-        setupUserProfileButton()
-    }
+    setupDrawerMenu()
+    setupDrawerListener()
+    setupCloseButton()
+    setupSettingsButton()
+    setupUserProfileButton()
+    setupVaccinationHistoryButton()
+}
 
     private fun setupDrawerMenu() {
         syncState()
@@ -61,6 +62,13 @@ class DrawerMenuHandler(
             activity.startActivity(intent)
         }
     }
+    private fun setupVaccinationHistoryButton() {
+    val vaccinationHistoryBtn: Button = navigationView.findViewById(R.id.nav_vaccination_history)
+    vaccinationHistoryBtn.setOnClickListener {
+        val intent = Intent(activity, VaccinationHistoryActivity::class.java)
+        activity.startActivity(intent)
+    }
+}
     fun syncState() {
         toggle.syncState()
     }
