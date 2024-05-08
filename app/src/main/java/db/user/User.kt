@@ -6,5 +6,5 @@ data class User(
     val surname: String?= null,
     val email: String?= null,
     val date_of_birth: java.sql.Date?=null,
-    val password: String?=null,
+    val password_id: Int? = null,
 )

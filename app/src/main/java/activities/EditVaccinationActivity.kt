@@ -15,7 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.shawnlin.numberpicker.NumberPicker
 import com.google.android.material.snackbar.Snackbar
 
-class AddVaccinationActivity : AppCompatActivity() {
+class EditVaccinationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_vaccination)
@@ -24,6 +24,18 @@ class AddVaccinationActivity : AppCompatActivity() {
         setupDatePicker()
         setupNumberPicker()
         setupSaveButton()
+
+        // Populate the fields with the data from the vaccine variable
+        val vaccineName: EditText = findViewById(R.id.vaccine_name)
+        val manufacturer: EditText = findViewById(R.id.manufacturer)
+        val scheduleDateButton: Button = findViewById(R.id.schedule_date)
+        val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
+
+        // TODO: Connect with database - display vaccination data
+//        vaccineName.setText(vaccine.name)
+//        manufacturer.setText(vaccine.manufacturer)
+//        scheduleDateButton.text = "Schedule date: ${vaccine.scheduleDate}"
+//        nextDoseDueDateButton.text = "Next dose due date: ${vaccine.nextDoseDueDate}"
 
     }
 
@@ -37,7 +49,7 @@ class AddVaccinationActivity : AppCompatActivity() {
         }
 
         val titleTextView: TextView = toolbar.findViewById(R.id.toolbar_title)
-        titleTextView.text = "Add Vaccination"
+        titleTextView.text = "Edit Vaccination"
     }
 
     private fun setupDatePicker() {
@@ -96,42 +108,42 @@ class AddVaccinationActivity : AppCompatActivity() {
     }
 
     private fun setupSaveButton() {
-    val saveButton: FloatingActionButton = findViewById(R.id.save_vaccination)
-    val vaccineName: EditText = findViewById(R.id.vaccine_name)
-    val manufacturer: EditText = findViewById(R.id.manufacturer)
-    val scheduleDateButton: Button = findViewById(R.id.schedule_date)
-    val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
+        val saveButton: FloatingActionButton = findViewById(R.id.save_vaccination)
+        val vaccineName: EditText = findViewById(R.id.vaccine_name)
+        val manufacturer: EditText = findViewById(R.id.manufacturer)
+        val scheduleDateButton: Button = findViewById(R.id.schedule_date)
+        val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
 
-    saveButton.setOnClickListener {
-        val vaccineNameText = vaccineName.text.toString()
-        val manufacturerText = manufacturer.text.toString()
-        val scheduleDateText = scheduleDateButton.text.toString()
-        val nextDoseDueDateText = nextDoseDueDateButton.text.toString()
+        saveButton.setOnClickListener {
+            val vaccineNameText = vaccineName.text.toString()
+            val manufacturerText = manufacturer.text.toString()
+            val scheduleDateText = scheduleDateButton.text.toString()
+            val nextDoseDueDateText = nextDoseDueDateButton.text.toString()
 
-        if (vaccineNameText.isEmpty()) {
-            Toast.makeText(this, "Vaccine name cannot be empty", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
+            if (vaccineNameText.isEmpty()) {
+                Toast.makeText(this, "Vaccine name cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (manufacturerText.isEmpty()) {
+                Toast.makeText(this, "Manufacturer cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (scheduleDateText == "Select Schedule Date") {
+                Toast.makeText(this, "Please select a schedule date", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (nextDoseDueDateText == "Select Next Dose Due Date") {
+                Toast.makeText(this, "Please select the next dose due date", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            Toast.makeText(this, "Vaccination saved!", Toast.LENGTH_SHORT).show()
+            finish()
         }
-
-        if (manufacturerText.isEmpty()) {
-            Toast.makeText(this, "Manufacturer cannot be empty", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
-        }
-
-        if (scheduleDateText == "Select Schedule Date") {
-            Toast.makeText(this, "Please select a schedule date", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
-        }
-
-        if (nextDoseDueDateText == "Select Next Dose Due Date") {
-            Toast.makeText(this, "Please select the next dose due date", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
-        }
-
-        Toast.makeText(this, "Vaccination saved!", Toast.LENGTH_SHORT).show()
-        finish()
     }
-}
 
     override fun onBackPressed() {
         val snackbar = Snackbar.make(

@@ -20,10 +20,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     configurations {
-    all {
-        exclude(group = "com.google.protobuf", module = "protobuf-java")
+        all {
+            exclude(group = "com.google.protobuf", module = "protobuf-java")
+        }
     }
-}
 
     buildTypes {
         release {
