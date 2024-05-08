@@ -59,21 +59,11 @@ object ScheduledVaccinationSF {
         }
     }
 
-    suspend fun getScheduleVaccine(schedule_id: Int): ScheduledVaccination? {
+    suspend fun getScheduleVaccine(user_id: Int): Set<ScheduledVaccination?>? {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
             val scheduledVaccinationQueries = ScheduledVaccinationQueries(connection)
-            val result = scheduledVaccinationQueries.getScheduleVaccine(schedule_id)
-            connection.close()
-            result
-        }
-    }
-
-    suspend fun getAllScheduleVaccines(): Set<ScheduledVaccination?>? {
-        return withContext(Dispatchers.IO) {
-            val connection = DConnection.getConnection()
-            val scheduledVaccinationQueries = ScheduledVaccinationQueries(connection)
-            val result = scheduledVaccinationQueries.getAllScheduleVaccines()
+            val result = scheduledVaccinationQueries.getScheduleVaccine(user_id)
             connection.close()
             result
         }

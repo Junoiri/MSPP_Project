@@ -8,4 +8,5 @@ data class ScheduledVaccination(
     val schedule_date: Date?=null,
     val manufacturer: String?=null,
     val dose: String?=null,
+    val user_id: Int? = null,
 )

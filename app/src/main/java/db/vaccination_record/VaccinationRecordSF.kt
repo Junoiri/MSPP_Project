@@ -59,21 +59,11 @@ object VaccinationRecordSF {
         }
     }
 
-    suspend fun getRecord(record_id: Int): VaccinationRecord? {
+    suspend fun getRecord(user_id: Int): Set<VaccinationRecord?>? {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
             val vaccinationRecordQueries = VaccinationRecordQueries(connection)
-            val result = vaccinationRecordQueries.getRecord(record_id)
-            connection.close()
-            result
-        }
-    }
-
-    suspend fun getAllRecords(): Set<VaccinationRecord?>? {
-        return withContext(Dispatchers.IO) {
-            val connection = DConnection.getConnection()
-            val vaccinationRecordQueries = VaccinationRecordQueries(connection)
-            val result = vaccinationRecordQueries.getAllRecords()
+            val result = vaccinationRecordQueries.getRecord(user_id)
             connection.close()
             result
         }

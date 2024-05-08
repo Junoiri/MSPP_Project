@@ -4,7 +4,6 @@ import java.security.MessageDigest
 import java.sql.Connection
 import java.sql.ResultSet
 
-
 class PasswordQueries(private val connection: Connection) : PasswordDAO {
 
     override fun getPassword(password_id: Int): Password? {
@@ -21,20 +20,40 @@ class PasswordQueries(private val connection: Connection) : PasswordDAO {
     }
 
     override fun insertPassword(password: Password): Int {
-        val hashedPassword = password.password?.let { hash(it) }
         val query = "{CALL insertPassword(?)}"
         val callableStatement = connection.prepareCall(query)
-        callableStatement.setString(1, hashedPassword)
-        val resultSet = callableStatement.executeQuery()
 
-        if (resultSet.next()) {
-            return resultSet.getInt(1)
+        val hashedPassword = password.password?.let {
+            hash(it)
+        } ?: ""
+
+        callableStatement.setString(1, hashedPassword)
+
+        val result = callableStatement.executeUpdate()
+        var passwordId = -1
+
+        if (result > 0) {
+            // After inserting the password, fetch the last inserted passwordId
+            val selectLastIdQuery = "SELECT LAST_INSERT_ID() AS last_id"
+            val selectStatement = connection.createStatement()
+            val resultSet = selectStatement.executeQuery(selectLastIdQuery)
+
+            if (resultSet.next()) {
+                passwordId = resultSet.getInt("last_id")
+            }
+            selectStatement.close()
         }
-        return -1 // Change this to handle error cases appropriately
+
+        callableStatement.close()
+
+        return passwordId
     }
 
     override fun updatePassword(password_id: Int, password: Password): Boolean {
-        val hashedPassword = password.password?.let { hash(it) }
+        val hashedPassword = password.password?.let {
+            hash(it)
+        } ?: ""
+
         val query = "{CALL updatePassword(?, ?)}"
         val callableStatement = connection.prepareCall(query)
         callableStatement.setInt(1, password_id)
