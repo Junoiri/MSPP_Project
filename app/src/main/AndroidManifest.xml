@@ -19,8 +19,13 @@
         android:theme="@style/Theme.MSPP_Project"
         tools:targetApi="31">
         <activity
+            android:name="activities.VaccinationCalendarActivity"
+            android:exported="false" />
+        <activity
             android:name="activities.VaccinationHistoryActivity"
             android:exported="false" />
+        <activity android:name="activities.EditVaccinationActivity"
+            />
         <activity
             android:name="activities.AddVaccinationActivity"
             android:exported="false" />
