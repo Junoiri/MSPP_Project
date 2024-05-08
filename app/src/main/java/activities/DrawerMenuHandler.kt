@@ -29,6 +29,8 @@ class DrawerMenuHandler(
         setupCloseButton()
         setupSettingsButton()
         setupUserProfileButton()
+        setupVaccinationHistoryButton()
+        setupVaccinationCalendarButton()
     }
 
     private fun setupDrawerMenu() {
@@ -61,6 +63,25 @@ class DrawerMenuHandler(
             activity.startActivity(intent)
         }
     }
+
+    private fun setupVaccinationHistoryButton() {
+        val vaccinationHistoryBtn: Button =
+            navigationView.findViewById(R.id.nav_vaccination_history)
+        vaccinationHistoryBtn.setOnClickListener {
+            val intent = Intent(activity, VaccinationHistoryActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun setupVaccinationCalendarButton() {
+        val vaccinationCalendarBtn: Button = navigationView.findViewById(R.id.nav_vaccination_calendar)
+        vaccinationCalendarBtn.setOnClickListener {
+            val intent = Intent(activity, VaccinationCalendarActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
+
+
     fun syncState() {
         toggle.syncState()
     }
