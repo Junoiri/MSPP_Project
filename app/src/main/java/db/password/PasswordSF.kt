@@ -1,26 +1,18 @@
 package db.password
+
 import android.content.Context
 import android.widget.Toast
 import db.DConnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.security.MessageDigest
 
 object PasswordSF {
-
-    private fun hash(input: String): String {
-        val bytes = MessageDigest
-            .getInstance("SHA-1")
-            .digest(input.toByteArray())
-        return bytes.joinToString("") { "%02x".format(it) }
-    }
 
     suspend fun insertPassword(password: Password, context: Context): Int {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
-            val hashedPassword = password.password?.let { hash(it) }
             val passwordQueries = PasswordQueries(connection)
-            val result = passwordQueries.insertPassword(Password(password_id = 0, password = hashedPassword))
+            val result = passwordQueries.insertPassword(password)
             connection.close()
 
             withContext(Dispatchers.Main) {
@@ -48,9 +40,8 @@ object PasswordSF {
     suspend fun updatePassword(password_id: Int, newPassword: String, context: Context): Boolean {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
-            val hashedPassword = hash(newPassword)
             val passwordQueries = PasswordQueries(connection)
-            val result = passwordQueries.updatePassword(password_id, Password(password_id = 0, password = hashedPassword))
+            val result = passwordQueries.updatePassword(password_id, Password(password_id, newPassword))
             connection.close()
 
             withContext(Dispatchers.Main) {

@@ -1,8 +1,9 @@
 package db.user
+
 import java.sql.Connection
 import java.sql.ResultSet
 
-class UserQueries(private val connection: Connection): UserDAO{
+class UserQueries(private val connection: Connection): UserDAO {
 
     override fun insertUser(user: User): Boolean {
         val query = "{CALL insertUser(?,?,?,?,?,?)}"
@@ -20,16 +21,15 @@ class UserQueries(private val connection: Connection): UserDAO{
         return result
     }
 
-    private fun printHexBinary(data: ByteArray): String {
-        val builder = StringBuilder(data.size * 2)
-        for (b in data) {
-            builder.append(String.format("%02x", b))
-        }
-        return builder.toString()
+    override fun deleteUser(user_id: Int): Boolean {
+        val query= "{CALL deleteUser(?)}"
+        val callableStatement= connection.prepareCall(query)
+        callableStatement.setInt(1,user_id)
+
+        return callableStatement.executeUpdate() > 0
     }
 
-
-override fun getUser(user_id: Int): User? {
+    override fun getUser(user_id: Int): User? {
         val query= "{CALL getUser(?)}"
         val callableStatement= connection.prepareCall(query)
         callableStatement.setInt(1,user_id)
@@ -55,23 +55,30 @@ override fun getUser(user_id: Int): User? {
         return if (users.isEmpty()) null else users
     }
 
-    override fun deleteUser(user_id: Int): Boolean {
-        val query= "{CALL deleteUser(?)}"
-        val callableStatement= connection.prepareCall(query)
-        callableStatement.setInt(1,user_id)
-
-        return callableStatement.executeUpdate() > 0
-    }
     override fun updateUser(user_id: Int, user: User): Boolean {
-        val query = "{CALL updateUser(?,?,?,?,?)}"
+        val query = "{CALL updateUser(?,?,?,?,?,?)}"
         val callableStatement = connection.prepareCall(query)
         callableStatement.setInt(1, user_id)
         callableStatement.setString(2, user.name)
         callableStatement.setString(3, user.surname)
         callableStatement.setString(4, user.email)
         callableStatement.setDate(5, user.date_of_birth)
+        user.password_id?.let { callableStatement.setInt(6, it) }
 
         return callableStatement.executeUpdate() > 0
+    }
+
+    override fun getId(email: String): Int {
+        val query = "{CALL getIdByEmail(?)}"
+        val callableStatement = connection.prepareCall(query)
+        callableStatement.setString(1, email)
+        val resultSet = callableStatement.executeQuery()
+
+        return if (resultSet.next()) {
+            resultSet.getInt("user_id")
+        } else {
+            -1
+        }
     }
 
     private fun mapResultSetToUser(resultSet: ResultSet): User {
@@ -81,8 +88,8 @@ override fun getUser(user_id: Int): User? {
             surname= resultSet.getString("surname"),
             email= resultSet.getString("email"),
             date_of_birth = resultSet.getDate("date_of_birth"),
+            password_id = resultSet.getInt("password_id")
         )
     }
-
 }
 

@@ -1,6 +1,5 @@
 package activities
 
-import activities.dynamicLinking.ForgotPasswordActivity2
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -17,9 +16,13 @@ import authenticators.EmailAuthManager
 import authenticators.FacebookAuthManager
 import authenticators.GoogleAuthManager
 import com.example.mspp_project.R
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 class LoginActivity : AppCompatActivity() {
+
+    private var userEmail= Firebase.auth.currentUser?.email.toString()
 
     private lateinit var auth: FirebaseAuth
     private lateinit var emailAuthManager: EmailAuthManager
