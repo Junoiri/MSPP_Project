@@ -10,6 +10,14 @@ android {
     namespace = "com.example.mspp_project"
     compileSdk = 34
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
+    }
+
     defaultConfig {
         applicationId = "com.example.mspp_project"
         minSdk = 24
@@ -87,6 +95,31 @@ dependencies {
 
     //Number picker
     implementation("io.github.ShawnLin013:number-picker:2.4.13")
+
+    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    implementation(composeBom)
+
+    // Material Design 2
+    implementation("androidx.compose.material:material")
+
+    // Android Studio Preview support
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    // UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.7")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Optional - Included automatically by material, only add when you need
+    // the icons but not the material library
+    implementation("androidx.compose.material:material-icons-core")
+
+    // Optional - Integration with activities
+    implementation("androidx.activity:activity-compose:1.9.0")
+
+    // Optional - Integration with ViewModels
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
 
 
 }
