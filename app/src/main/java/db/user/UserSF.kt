@@ -46,24 +46,28 @@ object UserSF {
         }
     }
 
-    suspend fun updateEmail(user_id: Int, user: User, context: Context) {
-        withContext(Dispatchers.IO) {
+    suspend fun updateUser(user_id: Int, user: User, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
             try {
                 val userQueries = UserQueries(connection)
                 val result = userQueries.updateUser(user_id, user)
-                withContext(Dispatchers.Main) {
-                    if (result) {
-                        Toast.makeText(context, "User updated", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Failed to update user", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                result // Returning the result of updateUser query
             } finally {
                 connection.close()
             }
+        }.also { result ->
+            withContext(Dispatchers.Main) {
+                if (result) {
+                    Toast.makeText(context, "User updated", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "User update failed", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
+
+
 
     suspend fun getId(email: String): Int {
         return withContext(Dispatchers.IO) {
@@ -95,6 +99,17 @@ object UserSF {
             try {
                 val userQueries = UserQueries(connection)
                 userQueries.getAllUsers()
+            } finally {
+                connection.close()
+            }
+        }
+    }
+    suspend fun getPasswordId(email: String): Int {
+        return withContext(Dispatchers.IO) {
+            val connection = DConnection.getConnection()
+            try {
+                val userQueries = UserQueries(connection)
+                userQueries.getPasswordId(email)
             } finally {
                 connection.close()
             }

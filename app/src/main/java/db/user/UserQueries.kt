@@ -6,15 +6,13 @@ import java.sql.ResultSet
 class UserQueries(private val connection: Connection): UserDAO {
 
     override fun insertUser(user: User): Boolean {
-        val query = "{CALL insertUser(?,?,?,?,?,?)}"
+        val query = "{CALL insertUser(?,?,?,?,?)}"
         val callableStatement = connection.prepareCall(query)
-
-        user.user_id?.let { callableStatement.setInt(1, it) }
-        callableStatement.setString(2, user.name)
-        callableStatement.setString(3, user.surname)
-        callableStatement.setString(4, user.email)
-        callableStatement.setDate(5, user.date_of_birth)
-        user.password_id?.let { callableStatement.setInt(6, it) }
+        callableStatement.setString(1, user.name)
+        callableStatement.setString(2, user.surname)
+        callableStatement.setString(3, user.email)
+        callableStatement.setDate(4, user.date_of_birth)
+        user.password_id?.let { callableStatement.setInt(5, it) }
 
         val result = !callableStatement.execute()
         callableStatement.close()
@@ -69,13 +67,25 @@ class UserQueries(private val connection: Connection): UserDAO {
     }
 
     override fun getId(email: String): Int {
-        val query = "{CALL getIdByEmail(?)}"
+        val query = "{CALL getId(?)}"
         val callableStatement = connection.prepareCall(query)
         callableStatement.setString(1, email)
         val resultSet = callableStatement.executeQuery()
 
         return if (resultSet.next()) {
             resultSet.getInt("user_id")
+        } else {
+            -1
+        }
+    }
+    override fun getPasswordId(email: String): Int {
+        val query = "{CALL getPasswordId(?)}"
+        val callableStatement = connection.prepareCall(query)
+        callableStatement.setString(1, email)
+        val resultSet = callableStatement.executeQuery()
+
+        return if (resultSet.next()) {
+            resultSet.getInt("password_id")
         } else {
             -1
         }
