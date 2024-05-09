@@ -11,9 +11,31 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.mspp_project.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.shawnlin.numberpicker.NumberPicker
+import db.scheduled_vaccination.ScheduledVaccination
+import db.scheduled_vaccination.ScheduledVaccinationSF
+import db.user.UserSF
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class UpcomingVaccinationFragment : Fragment() {
+    private var userEmail = Firebase.auth.currentUser?.email.toString()
+    private lateinit var dateScheduleButton: Button
+    private lateinit var saveButton: FloatingActionButton
+    private lateinit var vaccineName: EditText
+    private lateinit var manufacturer: EditText
+    private lateinit var totalDosesNumberPicker: NumberPicker
+    private lateinit var dosesTakenNumberPicker: NumberPicker
+    private var selectedDate: Date? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -22,86 +44,104 @@ class UpcomingVaccinationFragment : Fragment() {
         return inflater.inflate(R.layout.add_schedule_layout, container, false)
     }
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        view?.let {
-            setupDatePicker(it)
-            setupNumberPicker(it)
-            setupSaveButton(it)
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initializeViews(view)
+        setupDatePicker()
+        setupSaveButton()
     }
 
+    private fun initializeViews(view: View) {
+        dateScheduleButton = view.findViewById(R.id.date_schedule)
+        saveButton = view.findViewById(R.id.save_vaccination)
+        vaccineName = view.findViewById(R.id.vaccine_name)
+        manufacturer = view.findViewById(R.id.manufacturer)
+        totalDosesNumberPicker = view.findViewById(R.id.dose_total_number_picker)
+        dosesTakenNumberPicker = view.findViewById(R.id.dose_taken_number_picker)
+    }
 
-    private fun setupDatePicker(view: View) {
-        val dateScheduleButton: Button = view.findViewById(R.id.date_schedule)
+    private fun setupDatePicker() {
         dateScheduleButton.setOnClickListener {
-            val datePickerDialog = DatePickerDialog(requireContext())
-            datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
-                // Display the selected date on the button
-                val selectedDate = "$dayOfMonth/${month + 1}/$year"
-                dateScheduleButton.text = "Date schedule: $selectedDate"
-            }
+            val calendar = Calendar.getInstance()
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    // Display the selected date on the button
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    calendar.set(year, month, dayOfMonth)
+                    selectedDate = calendar.time
+                    dateScheduleButton.text = "Date schedule: ${sdf.format(selectedDate)}"
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
             datePickerDialog.show()
         }
     }
 
-    private fun setupNumberPicker(view: View) {
-        val totalDosesNumberPicker: NumberPicker = view.findViewById(R.id.dose_total_number_picker)
-        val dosesTakenNumberPicker: NumberPicker = view.findViewById(R.id.dose_taken_number_picker)
+    private fun setupSaveButton() {
+        saveButton.setOnClickListener {
+            val vaccineNameText = vaccineName.text.toString()
+            val manufacturerText = manufacturer.text.toString()
+            val scheduleDateText = dateScheduleButton.text.toString()
 
-        // Initially, disable the second number picker
-        dosesTakenNumberPicker.isEnabled = false
+            if (vaccineNameText.isEmpty()) {
+                Toast.makeText(requireContext(), "Vaccine name cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-        // Setup the first number picker
-        totalDosesNumberPicker.maxValue = 9
-        totalDosesNumberPicker.minValue = 1
-        totalDosesNumberPicker.value = 1
+            if (manufacturerText.isEmpty()) {
+                Toast.makeText(requireContext(), "Manufacturer cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-        // When the value of the first number picker changes, update the maximum value of the second number picker and enable it
-        totalDosesNumberPicker.setOnValueChangedListener { _, _, newVal ->
-            dosesTakenNumberPicker.maxValue = newVal
-            dosesTakenNumberPicker.isEnabled = true
+            if (scheduleDateText == "Date schedule") {
+                Toast.makeText(requireContext(), "Please select a schedule date", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (totalDosesNumberPicker.value == 0 || dosesTakenNumberPicker.value == 0) {
+                Toast.makeText(requireContext(), "Please select the number of doses", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val totalDoses = totalDosesNumberPicker.value
+            val dosesTaken = dosesTakenNumberPicker.value
+
+            selectedDate?.let { date ->
+                val scheduledVaccination = ScheduledVaccination(
+                    vaccine_name = vaccineNameText,
+                    schedule_date = java.sql.Date(selectedDate?.time ?: 0),
+                    manufacturer = manufacturerText,
+                    dose = "$dosesTaken/$totalDoses",
+                    user_id = null // Set user ID later
+                )
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        val userId = getId(userEmail)
+                        userId?.let {
+                            scheduledVaccination.user_id = it
+                            ScheduledVaccinationSF.insertSchedule(scheduledVaccination, requireContext())
+                            Toast.makeText(requireContext(), "Vaccination schedule saved!", Toast.LENGTH_SHORT).show()
+                        } ?: run {
+                            Toast.makeText(requireContext(), "Failed to retrieve user ID", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), "Failed to save vaccination schedule", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
+                    }
+                }
+            } ?: run {
+                Toast.makeText(requireContext(), "Please select a schedule date", Toast.LENGTH_SHORT).show()
+            }
         }
-
-        // Setup the second number picker
-        dosesTakenNumberPicker.minValue = 1
-        dosesTakenNumberPicker.value = 1
     }
-   private fun setupSaveButton(view: View) {
-    val saveButton: FloatingActionButton = view.findViewById(R.id.save_vaccination)
-    val vaccineName: EditText = view.findViewById(R.id.vaccine_name)
-    val manufacturer: EditText = view.findViewById(R.id.manufacturer)
-    val scheduleDateButton: Button = view.findViewById(R.id.date_schedule)
-    val totalDosesNumberPicker: NumberPicker = view.findViewById(R.id.dose_total_number_picker)
-    val dosesTakenNumberPicker: NumberPicker = view.findViewById(R.id.dose_taken_number_picker)
 
-    saveButton.setOnClickListener {
-        val vaccineNameText = vaccineName.text.toString()
-        val manufacturerText = manufacturer.text.toString()
-        val scheduleDateText = scheduleDateButton.text.toString()
-
-        if (vaccineNameText.isEmpty()) {
-            Toast.makeText(requireContext(), "Vaccine name cannot be empty", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
+    private suspend fun getId(email: String): Int? {
+        return withContext(Dispatchers.IO) {
+            UserSF.getId(email)
         }
-
-        if (manufacturerText.isEmpty()) {
-            Toast.makeText(requireContext(), "Manufacturer cannot be empty", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
-        }
-
-        if (scheduleDateText == "Date schedule") {
-            Toast.makeText(requireContext(), "Please select a schedule date", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
-        }
-
-        if (totalDosesNumberPicker.value == 0 || dosesTakenNumberPicker.value == 0) {
-            Toast.makeText(requireContext(), "Please select the number of doses", Toast.LENGTH_SHORT).show()
-            return@setOnClickListener
-        }
-
-        Toast.makeText(requireContext(), "Vaccination schedule saved!", Toast.LENGTH_SHORT).show()
     }
-}
 }
