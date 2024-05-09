@@ -10,49 +10,60 @@ import java.time.LocalDate
 
 class CalendarAdapter(
     private val daysOfMonth: ArrayList<String>,
-    private val onItemListener: OnItemListener
+    private val onItemListener: OnItemListener,
+    private val selectedDate: LocalDate
 ) :
     RecyclerView.Adapter<CalendarViewHolder>() {
-    private var selectedPosition = -1 // Add this line
+    private var selectedPosition = -1
+    private var previousSelectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view: View = inflater.inflate(R.layout.calendar_cell, parent, false)
         val layoutParams = view.layoutParams
-        layoutParams.height = (parent.height * 0.166666666).toInt()
+        layoutParams.height = (parent.height * 0.166666666 * 0.5).toInt()
         return CalendarViewHolder(view, onItemListener)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.dayOfMonth.text = daysOfMonth[position]
+    holder.dayOfMonth.text = daysOfMonth[position]
 
-        // Get the current day
-        val currentDay = LocalDate.now().dayOfMonth.toString()
+    // Get the current date
+    val currentDate = LocalDate.now()
 
-        if (currentDay == daysOfMonth[position]) {
-            holder.dayCell.setBackgroundColor(Color.MAGENTA)
-        } else {
-            holder.dayCell.setBackgroundColor(Color.TRANSPARENT)
-        }
+    // Get the date of the current cell
+    val cellDate = if (daysOfMonth[position].isNotEmpty()) {
+        selectedDate.withDayOfMonth(daysOfMonth[position].toInt())
+    } else {
+        null
+    }
 
-        // Set the background color of the selected cell to light gray
-        if (position == selectedPosition) {
-            holder.dayCell.setBackgroundColor(Color.LTGRAY)
-        }
+    // If the cell date is the same as the current date, change the background color
+    if (currentDate == cellDate) {
+        holder.dayCell.setBackgroundColor(Color.MAGENTA)
+    } else {
+        holder.dayCell.setBackgroundColor(Color.TRANSPARENT)
+    }
 
-        // Set an OnClickListener for the day cell
-        holder.dayCell.setOnClickListener {
+    // Set an OnClickListener for the day cell
+    holder.dayCell.setOnClickListener {
+        val currentPosition = holder.adapterPosition
+        // Only change the background color and update the selected position if the cell contains a date
+        if (daysOfMonth[currentPosition].isNotEmpty()) {
             // Reset the background color of the previously selected cell
             notifyItemChanged(selectedPosition)
             // Update the selected position
-            selectedPosition = position
+            selectedPosition = currentPosition
             // Change the background color of the clicked cell to light gray
             it.setBackgroundColor(Color.LTGRAY)
             // Call the onItemClick method of the OnItemListener
-            onItemListener.onItemClick(position, daysOfMonth[position])
+            onItemListener.onItemClick(currentPosition, daysOfMonth[currentPosition])
+            // Update the previous selected position
+            previousSelectedPosition = selectedPosition
         }
     }
+}
 
     override fun getItemCount(): Int {
         return daysOfMonth.size

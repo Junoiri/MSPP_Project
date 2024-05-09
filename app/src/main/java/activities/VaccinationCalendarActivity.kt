@@ -24,10 +24,13 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 
+@RequiresApi(Build.VERSION_CODES.O)
 class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     private lateinit var monthYearText: TextView
     private lateinit var calendarRecyclerView: RecyclerView
     private lateinit var selectedDate: LocalDate
+
+    private var bottomSheetDialogFragment: VaccinationBottomSheetDialogFragment? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,9 +63,8 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setMonthView() {
         monthYearText.text = monthYearFromDate(selectedDate)
-        val daysInMonth = daysInMonthArray(selectedDate)
-
-        val calendarAdapter = CalendarAdapter(daysInMonth, this)
+        val daysOfMonth = daysInMonthArray(selectedDate)
+        val calendarAdapter = CalendarAdapter(daysOfMonth, this, selectedDate)
         val layoutManager = GridLayoutManager(applicationContext, 7)
         calendarRecyclerView.layoutManager = layoutManager
         calendarRecyclerView.adapter = calendarAdapter
@@ -109,33 +111,47 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onItemClick(position: Int, dayText: String?) {
         if (!dayText.isNullOrEmpty()) {
-            val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_layout, null)
-            val dialogTitle = dialogView.findViewById<TextView>(R.id.dialog_title)
-            val dialogRecyclerView =
-                dialogView.findViewById<RecyclerView>(R.id.dialog_recycler_view)
+            val selectedDateText = "Selected Date: $dayText ${monthYearFromDate(selectedDate)}"
 
-            dialogTitle.text = "Selected Date: $dayText ${monthYearFromDate(selectedDate)}"
+            // Get the vaccinations from the database for the selected day
+            // This is a placeholder and you need to replace it with your actual database call
+            val vaccinations = getVaccinationsForDate(selectedDateText)
 
-            // Create a list of draft ScheduledVaccination objects
-            val vaccinations = listOf(
-                ScheduledVaccination(1, "Vaccination 1"),
-                ScheduledVaccination(2, "Vaccination 2"),
-                ScheduledVaccination(3, "Vaccination 3")
-            )
+            if (vaccinations.isNotEmpty()) {
+                // If the BottomSheetDialogFragment is not currently displayed, create a new instance
+                if (bottomSheetDialogFragment == null) {
+                    bottomSheetDialogFragment = VaccinationBottomSheetDialogFragment()
 
-            // Set up the RecyclerView with the data for the vaccinations planned for the selected day
-            val adapter = VaccinationAdapter(vaccinations)
-            dialogRecyclerView.adapter = adapter
-            dialogRecyclerView.layoutManager = LinearLayoutManager(this)
+                    // Create a Bundle to hold the selected date
+                    val bundle = Bundle()
+                    bundle.putString("selectedDate", selectedDateText)
 
-            val dialog = AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setPositiveButton("Close") { dialog, _ ->
-                    dialog.dismiss()
+                    // Set the Bundle as an argument to the fragment
+                    bottomSheetDialogFragment!!.arguments = bundle
+
+                    // Show the BottomSheetDialogFragment
+                    bottomSheetDialogFragment!!.show(
+                        supportFragmentManager,
+                        "VaccinationBottomSheetDialog"
+                    )
+                } else {
+                    // If the BottomSheetDialogFragment is currently displayed, update its content
+                    bottomSheetDialogFragment!!.requireArguments()
+                        .putString("selectedDate", selectedDateText)
+                    bottomSheetDialogFragment!!.updateContent()
                 }
-                .create()
-
-            dialog.show()
+            } else {
+                Toast.makeText(this, "No vaccinations scheduled for this date.", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
+    }
+
+    // Placeholder method to get vaccinations from the database
+// Replace this with your actual database call
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
+        // TODO: Implement the database call to get the vaccinations for the given date
+        return emptyList()
     }
 }
