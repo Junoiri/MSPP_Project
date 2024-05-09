@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/custom_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_above="@+id/save_vaccination">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/vaccine_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Vaccine Name" />
+
+            <Button
+                android:id="@+id/date_administrated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Date Administered" />
+
+            <Button
+                android:id="@+id/next_dose_due_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Next Dose Due Date" />
+
+            <EditText
+                android:id="@+id/manufacturer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Manufacturer" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="6dp"
+                android:text="Total doses number"
+                android:textSize="18sp" />
+
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/dose_total_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:np_height="64dp"
+                app:np_max="9"
+                app:np_min="1"
+                app:np_orientation="horizontal"
+                app:np_value="1"
+                app:np_width="180dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="6dp"
+                android:text="Doses already taken"
+                android:textSize="18sp" />
+
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/dose_taken_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:np_height="64dp"
+                app:np_max="9"
+                app:np_min="1"
+                app:np_orientation="horizontal"
+                app:np_value="1"
+                app:np_width="180dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/save_vaccination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_check_black"
+        app:fabSize="normal" />
+
+</RelativeLayout>
