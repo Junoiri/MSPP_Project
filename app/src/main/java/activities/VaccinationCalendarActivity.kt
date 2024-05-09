@@ -147,7 +147,7 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         }
     }
 
-    // Placeholder method to get vaccinations from the database
+    // TODO: Placeholder method to get vaccinations from the database
 // Replace this with your actual database call
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {

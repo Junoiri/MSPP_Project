@@ -8,10 +8,6 @@ import android.transition.TransitionManager
 import android.widget.ImageButton
 import com.google.android.material.snackbar.Snackbar
 
-//TODO: implement the adapters for Vaccination Record and Vaccination Schedule to display the data in
-// the recycler view of the calendar activity
-//NOTE: Example:
-
 class VaccinationAdapter(private val vaccinations: List<ScheduledVaccination>) :
     RecyclerView.Adapter<VaccinationAdapter.VaccinationViewHolder>() {
 
@@ -44,7 +40,7 @@ class VaccinationAdapter(private val vaccinations: List<ScheduledVaccination>) :
             }
 
 
-            //TODO: Set up the click listener to EditVaccinationRecord or EditUpcomingVaccination based on the date of the vaccination
+            //TODO: Set up the click listener to EditVaccinationRecord or EditUpcomingVaccination based on the date of the vaccination - database
             editButton.setOnClickListener {
                 val context = it.context
 //                val intent = Intent(context, EditVaccinationActivity::class.java)

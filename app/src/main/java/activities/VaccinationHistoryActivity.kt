@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.mspp_project.R
 import android.view.animation.Animation
 
+// TODO: load data from the db
 class VaccinationHistoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import android.util.Log
 import com.example.mspp_project.R
 
+
+//TODO: make it work based on date of vaccination - reminders
 class NotificationHelper(private val context: Context) {
 
     companion object {

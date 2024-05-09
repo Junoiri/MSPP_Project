@@ -17,6 +17,9 @@ import com.example.mspp_project.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
+
+
+// TODO: to be discussed btwn Marta and Pola - add some main elements?
 class MainActivity : AppCompatActivity() {
     private lateinit var menuButton: ImageButton
     private lateinit var slideRight: Animation

@@ -86,7 +86,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         // Validate input
         if (validateInput(email, name, surname, dob, idNumber)) {
-            // Mock saving changes
+            // TODO: Save to the db
             Toast.makeText(this, "Changes saved successfully", Toast.LENGTH_SHORT).show()
         }
     }

@@ -56,7 +56,7 @@ class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
         dialogRecyclerView.adapter = adapter
     }
 
-    // Placeholder method to get vaccinations from the database
+    // TODO: Placeholder method to get vaccinations from the database
     // Replace this with your actual database call
     private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
         // TODO: Implement the database call to get the vaccinations for the given date

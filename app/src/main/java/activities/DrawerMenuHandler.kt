@@ -1,4 +1,5 @@
-//package activities
+// TODO: to be deleted
+// package activities
 //
 //import android.content.Intent
 //import android.os.Build
