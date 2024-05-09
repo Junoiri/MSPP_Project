@@ -27,16 +27,6 @@ object PasswordSF {
         }
     }
 
-    suspend fun getPassword(password_id: Int): Password? {
-        return withContext(Dispatchers.IO) {
-            val connection = DConnection.getConnection()
-            val passwordQueries = PasswordQueries(connection)
-            val result = passwordQueries.getPassword(password_id)
-            connection.close()
-            result
-        }
-    }
-
     suspend fun updatePassword(password_id: Int, newPassword: String, context: Context): Boolean {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
@@ -71,6 +61,16 @@ object PasswordSF {
                 }
             }
 
+            result
+        }
+    }
+
+    suspend fun getPassword(password_id: Int): Password? {
+        return withContext(Dispatchers.IO) {
+            val connection = DConnection.getConnection()
+            val passwordQueries = PasswordQueries(connection)
+            val result = passwordQueries.getPassword(password_id)
+            connection.close()
             result
         }
     }

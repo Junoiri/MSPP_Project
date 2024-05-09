@@ -12,6 +12,8 @@ object DConnection {
 
     init{
         Class.forName("com.mysql.jdbc.Driver")
+
+
     }
 
     fun getConnection(): Connection {

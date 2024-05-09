@@ -283,11 +283,6 @@ class RegisterActivity : AppCompatActivity() {
                 false
             }
 
-            !isValidIdNumber(idNumber) -> {
-                showToast("Invalid ID Number")
-                false
-            }
-
             !isValidPassword(password) -> {
                 showToast("Password must be at least 8 characters, contain a number, a special character, and an uppercase letter")
                 false
@@ -349,9 +344,6 @@ class RegisterActivity : AppCompatActivity() {
         return java.sql.Date(utilDate.time)
     }
 
-    private fun isValidIdNumber(idNumber: String): Boolean {
-        return idNumber.matches("\\d{11}".toRegex())
-    }
 
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 8 &&

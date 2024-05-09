@@ -58,7 +58,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.activity:activity:1.8.0")
-    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("mysql:mysql-connector-java:5.1.49")
     implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
     implementation("com.google.firebase:firebase-dynamic-links-ktx:21.2.0")
     testImplementation("junit:junit:4.13.2")
@@ -75,7 +75,7 @@ dependencies {
     // https://firebase.google.com/docs/android/setup#available-libraries
 
     //db + coroutines
-    implementation("mysql:mysql-connector-java:5.1.26")
+    implementation("mysql:mysql-connector-java:5.1.49")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1") // Firebase Authentication with Kotlin extensions
 
