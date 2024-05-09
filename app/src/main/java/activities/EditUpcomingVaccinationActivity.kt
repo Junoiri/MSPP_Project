@@ -15,10 +15,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.shawnlin.numberpicker.NumberPicker
 import com.google.android.material.snackbar.Snackbar
 
-class EditVaccinationActivity : AppCompatActivity() {
+class EditUpcomingVaccinationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_vaccination)
+        setContentView(R.layout.activity_edit_upcoming_vaccination)
 
         setupToolbar()
         setupDatePicker()
@@ -28,15 +28,14 @@ class EditVaccinationActivity : AppCompatActivity() {
         // Populate the fields with the data from the vaccine variable
         val vaccineName: EditText = findViewById(R.id.vaccine_name)
         val manufacturer: EditText = findViewById(R.id.manufacturer)
-        val scheduleDateButton: Button = findViewById(R.id.schedule_date)
+        val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
 
         // TODO: Connect with database - display vaccination data
-//        vaccineName.setText(vaccine.name)
-//        manufacturer.setText(vaccine.manufacturer)
-//        scheduleDateButton.text = "Schedule date: ${vaccine.scheduleDate}"
-//        nextDoseDueDateButton.text = "Next dose due date: ${vaccine.nextDoseDueDate}"
-
+        // vaccineName.setText(vaccine.name)
+        // manufacturer.setText(vaccine.manufacturer)
+        // dateAdministeredButton.text = "Date administered: ${vaccine.dateAdministered}"
+        // nextDoseDueDateButton.text = "Next dose due date: ${vaccine.nextDoseDueDate}"
     }
 
     private fun setupToolbar() {
@@ -49,17 +48,17 @@ class EditVaccinationActivity : AppCompatActivity() {
         }
 
         val titleTextView: TextView = toolbar.findViewById(R.id.toolbar_title)
-        titleTextView.text = "Edit Vaccination"
+        titleTextView.text = "Edit Schedule"
     }
 
     private fun setupDatePicker() {
-        val scheduleDateButton: Button = findViewById(R.id.schedule_date)
-        scheduleDateButton.setOnClickListener {
+        val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
+        dateAdministeredButton.setOnClickListener {
             val datePickerDialog = DatePickerDialog(this)
             datePickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
                 // Display the selected date on the button
                 val selectedDate = "$dayOfMonth/${month + 1}/$year"
-                scheduleDateButton.text = "Schedule date: $selectedDate"
+                dateAdministeredButton.text = "Date administered: $selectedDate"
             }
             datePickerDialog.show()
         }
@@ -111,13 +110,13 @@ class EditVaccinationActivity : AppCompatActivity() {
         val saveButton: FloatingActionButton = findViewById(R.id.save_vaccination)
         val vaccineName: EditText = findViewById(R.id.vaccine_name)
         val manufacturer: EditText = findViewById(R.id.manufacturer)
-        val scheduleDateButton: Button = findViewById(R.id.schedule_date)
+        val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
 
         saveButton.setOnClickListener {
             val vaccineNameText = vaccineName.text.toString()
             val manufacturerText = manufacturer.text.toString()
-            val scheduleDateText = scheduleDateButton.text.toString()
+            val dateAdministeredText = dateAdministeredButton.text.toString()
             val nextDoseDueDateText = nextDoseDueDateButton.text.toString()
 
             if (vaccineNameText.isEmpty()) {
@@ -130,8 +129,8 @@ class EditVaccinationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (scheduleDateText == "Select Schedule Date") {
-                Toast.makeText(this, "Please select a schedule date", Toast.LENGTH_SHORT).show()
+            if (dateAdministeredText == "Select Date Administered") {
+                Toast.makeText(this, "Please select a date administered", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

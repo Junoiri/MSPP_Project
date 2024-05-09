@@ -10,6 +10,14 @@ android {
     namespace = "com.example.mspp_project"
     compileSdk = 34
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
+    }
+
     defaultConfig {
         applicationId = "com.example.mspp_project"
         minSdk = 24
@@ -50,7 +58,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.activity:activity:1.8.0")
-    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("mysql:mysql-connector-java:5.1.49")
     implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
     implementation("com.google.firebase:firebase-dynamic-links-ktx:21.2.0")
     testImplementation("junit:junit:4.13.2")
@@ -67,7 +75,7 @@ dependencies {
     // https://firebase.google.com/docs/android/setup#available-libraries
 
     //db + coroutines
-    implementation("mysql:mysql-connector-java:5.1.26")
+    implementation("mysql:mysql-connector-java:5.1.49")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1") // Firebase Authentication with Kotlin extensions
 
@@ -87,6 +95,31 @@ dependencies {
 
     //Number picker
     implementation("io.github.ShawnLin013:number-picker:2.4.13")
+
+    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    implementation(composeBom)
+
+    // Material Design 2
+    implementation("androidx.compose.material:material")
+
+    // Android Studio Preview support
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    // UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.7")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Optional - Included automatically by material, only add when you need
+    // the icons but not the material library
+    implementation("androidx.compose.material:material-icons-core")
+
+    // Optional - Integration with activities
+    implementation("androidx.activity:activity-compose:1.9.0")
+
+    // Optional - Integration with ViewModels
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
 
 
 }

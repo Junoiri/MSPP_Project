@@ -6,15 +6,31 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import authenticators.FacebookAuthManager
 import authenticators.GoogleAuthManager
 import com.example.mspp_project.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import db.password.Password
+import db.password.PasswordSF
+import db.user.User
+import db.user.UserSF
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
@@ -31,6 +47,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var icons: List<ImageView>
     private lateinit var progressBar: ProgressBar
+    private var passId: Int = -1
 
     private lateinit var googleAuthManager: GoogleAuthManager
     private lateinit var facebookAuthManager: FacebookAuthManager
@@ -55,7 +72,6 @@ class RegisterActivity : AppCompatActivity() {
         setupTextWatchers()
         setupLoginListener()
         setupDatePicker()
-
     }
 
     private fun initializeViews() {
@@ -92,9 +108,19 @@ class RegisterActivity : AppCompatActivity() {
         }
         passwordEditText.setSelection(passwordEditText.text.length)
     }
-
+    //Calling firstly insert password suspend function then insert user
     private fun setRegisterButtonListener() {
-        registerButton.setOnClickListener { registerUser() }
+        registerButton.setOnClickListener {
+            GlobalScope.launch(Dispatchers.Main) {
+                val passwordId = insertPassword()
+                if (passwordId != -1) {
+                    passId = passwordId
+                    insertUser()
+                } else {
+                    showToast("Failed to insert password")
+                }
+            }
+        }
     }
 
     private fun setupGoogleSignInButtonListener() {
@@ -257,11 +283,6 @@ class RegisterActivity : AppCompatActivity() {
                 false
             }
 
-            !isValidIdNumber(idNumber) -> {
-                showToast("Invalid ID Number")
-                false
-            }
-
             !isValidPassword(password) -> {
                 showToast("Password must be at least 8 characters, contain a number, a special character, and an uppercase letter")
                 false
@@ -286,9 +307,43 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidIdNumber(idNumber: String): Boolean {
-        return idNumber.matches("\\d{11}".toRegex())
+    private suspend fun insertPassword(): Int {
+        val password: String = passwordEditText.text.toString().trim()
+
+        return withContext(Dispatchers.IO) {
+            val pass = Password(null, password)
+            val passwordId = PasswordSF.insertPassword(pass, this@RegisterActivity)
+            passwordId
+        }
     }
+
+    private suspend fun insertUser() {
+        val name: String = nameEditText.text.toString().trim()
+        val surname: String = surnameEditText.text.toString().trim()
+        val email: String = emailEditText.text.toString().trim()
+        val selectedDateString: String = dobEditText.text.toString().trim()
+
+        val selectedDate: Date? = parseDate(selectedDateString)
+
+        val user = User(null,name, surname, email, selectedDate?.let { toSqlDate(it) }, passId)
+
+        withContext(Dispatchers.IO) {
+            UserSF.insertUser(user, this@RegisterActivity)
+        }
+    }
+    private fun parseDate(dateString: String): Date? {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return try {
+            format.parse(dateString)
+        } catch (e: ParseException) {
+            null
+        }
+    }
+
+    private fun toSqlDate(utilDate: Date): java.sql.Date {
+        return java.sql.Date(utilDate.time)
+    }
+
 
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 8 &&

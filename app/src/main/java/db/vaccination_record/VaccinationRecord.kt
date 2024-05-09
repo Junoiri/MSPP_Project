@@ -7,4 +7,5 @@ data class VaccinationRecord(
     val next_dose_due_date: java.sql.Date?=null,
     val manufacturer: String?=null,
     val dose: String?=null,
+    val user_id: Int? = null,
 )

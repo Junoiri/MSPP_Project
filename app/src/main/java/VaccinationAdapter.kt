@@ -1,5 +1,3 @@
-import activities.EditVaccinationActivity
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,13 +43,15 @@ class VaccinationAdapter(private val vaccinations: List<ScheduledVaccination>) :
                 }
             }
 
+
+            //TODO: Set up the click listener to EditVaccinationRecord or EditUpcomingVaccination based on the date of the vaccination
             editButton.setOnClickListener {
                 val context = it.context
-                val intent = Intent(context, EditVaccinationActivity::class.java)
+//                val intent = Intent(context, EditVaccinationActivity::class.java)
                 // Pass any extra data to EditVaccineActivity if needed
                 // For example, you might want to pass the ID of the vaccination to be edited
                 // intent.putExtra("VACCINATION_ID", vaccination.id)
-                context.startActivity(intent)
+//                context.startActivity(intent)
             }
 
             deleteButton.setOnClickListener {

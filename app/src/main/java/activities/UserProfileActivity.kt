@@ -1,27 +1,33 @@
 package activities
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.mspp_project.R
-import utils.SnackbarHelper
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.regex.Pattern
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.util.Log
-
-//TODO: Implement the hints for input fields, block the email field from being edited
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.mspp_project.R
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import db.DConnection
+import db.user.User
+import db.user.UserQueries
+import db.user.UserSF
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import utils.SnackbarHelper
+import java.sql.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.regex.Pattern
 
 class UserProfileActivity : AppCompatActivity() {
+
+    private var userEmail = Firebase.auth.currentUser?.email.toString()
     private lateinit var nameEditText: EditText
     private lateinit var surnameEditText: EditText
     private lateinit var emailEditText: EditText
@@ -29,6 +35,8 @@ class UserProfileActivity : AppCompatActivity() {
     private lateinit var idNumberEditText: EditText
     private lateinit var saveButton: Button
     private lateinit var backButton: ImageView
+    private var userId: Int = -1
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +47,14 @@ class UserProfileActivity : AppCompatActivity() {
         setupClickListeners()
 
         setActivityName()
+
+        coroutineScope.launch {
+            getId(userEmail)
+            updateUser() // Call updateUser function here
+        }
     }
 
     private fun initializeViews() {
-
         nameEditText = findViewById(R.id.name_edit_text)
         surnameEditText = findViewById(R.id.surname_edit_text)
         emailEditText = findViewById(R.id.email_edit_text)
@@ -60,10 +72,10 @@ class UserProfileActivity : AppCompatActivity() {
     }
 
     private fun setActivityName() {
-    val toolbarLayout = findViewById<LinearLayout>(R.id.toolbar)
-    val titleTextView: TextView = toolbarLayout.findViewById(R.id.toolbar_title)
-    titleTextView.text = "User Profile"
-}
+        val toolbarLayout = findViewById<LinearLayout>(R.id.toolbar)
+        val titleTextView: TextView = toolbarLayout.findViewById(R.id.toolbar_title)
+        titleTextView.text = "User Profile"
+    }
 
     private fun saveChanges() {
         val name = nameEditText.text.toString()
@@ -107,12 +119,32 @@ class UserProfileActivity : AppCompatActivity() {
                 false
             }
 
-            !isValidIdNumber(idNumber) -> {
-                showToast("Invalid ID Number")
-                false
-            }
-
             else -> true
+        }
+    }
+
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    private suspend fun updateUser() {
+        val name: String = nameEditText.text.toString().trim()
+        val surname: String = surnameEditText.text.toString().trim()
+        val email: String = emailEditText.text.toString().trim()
+        val dobString: String = dobEditText.text.toString().trim()
+
+        val dob: Date? = try {
+            val utilDate = dateFormat.parse(dobString)
+            Date(utilDate?.time ?: 0)
+        } catch (e: Exception) {
+            null
+        }
+
+        withContext(Dispatchers.IO) {
+            val success = UserSF.updateUser(userId, User(null, name, surname, email, dob, null), this@UserProfileActivity)
+            if (success) {
+                showToast("User updated successfully")
+            } else {
+                showToast("Failed to update user")
+            }
         }
     }
 
@@ -131,8 +163,14 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidIdNumber(idNumber: String): Boolean {
-        return idNumber.matches("\\d{11}".toRegex())
+    private suspend fun getId(email: String): Int {
+        return withContext(Dispatchers.IO) {
+            val connection = DConnection.getConnection()
+            connection.use { connection ->
+                val userQueries = UserQueries(connection)
+                userQueries.getId(email)
+            }
+        }
     }
 
     private fun showToast(message: String) {
