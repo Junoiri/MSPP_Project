@@ -249,7 +249,7 @@ class RegisterActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
-        overridePendingTransition(R.anim.slide_left, R.anim.slide_right)
+        overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left)
     }
 
     private fun validateInput(
