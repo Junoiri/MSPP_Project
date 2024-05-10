@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:orientation="horizontal"
-    android:layout_marginTop="5dp">
+    android:layout_marginTop="3dp">
 
 
     <ImageView
@@ -27,7 +27,7 @@
             android:text="Activity Name"
             android:padding="15dp"
             android:textColor="@android:color/white"
-            android:textSize="30sp"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

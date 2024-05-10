@@ -21,6 +21,6 @@ class SplashActivity : AppCompatActivity() {
             val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_up, R.anim.slide_out_up_splash)
-        }, 5000) // delay of 5 seconds
+        }, 3000) // delay of 5 seconds
     }
 }

@@ -3,8 +3,12 @@
     <style name="Theme.MSPP_Project" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/defaultBlack</item>
         <item name="colorPrimaryDark">@color/defaultBlack</item>
-        <item name="colorAccent">@color/blue</item>
+        <item name="colorAccent">@color/colorBlackTransparent</item>
         <item name="android:navigationBarColor">@color/defaultBlack</item>
+<!--        <item name="floatingActionButtonStyle">floatingActionButton</item>-->
+<!--        <item name="floatingActionButtonTertiaryStyle">@color/colorBlackTransparent</item>-->
+
+
     </style>
 
     <style name="BlueButton" parent="Widget.MaterialComponents.Button">

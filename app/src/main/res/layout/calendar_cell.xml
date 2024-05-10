@@ -8,6 +8,7 @@
         android:id="@+id/cellDayText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textColor="@color/defaultBlack"
         android:gravity="center"
         android:text="1"
         android:textSize="20sp" />

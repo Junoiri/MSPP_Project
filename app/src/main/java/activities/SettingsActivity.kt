@@ -35,6 +35,7 @@ class SettingsActivity : AppCompatActivity() {
         val backButton: ImageView = toolbar.findViewById(R.id.back_button)
         backButton.setOnClickListener {
             finish() // Finish the SettingsActivity and go back
+            overridePendingTransition(R.anim.stay, R.anim.pop_out)
         }
 
         val titleTextView: TextView = toolbar.findViewById(R.id.toolbar_title)
