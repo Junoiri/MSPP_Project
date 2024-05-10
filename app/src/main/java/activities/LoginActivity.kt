@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var registerTextView: TextView
-    private lateinit var toggleButton: Button
+    private lateinit var toggleButton: ImageView
     private lateinit var forgotPasswordTextView: TextView
     private lateinit var progressBar: ProgressBar
 
@@ -97,18 +97,22 @@ class LoginActivity : AppCompatActivity() {
     private fun navigateToRegisterActivity() {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_right, R.anim.slide_left)
     }
 
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish() // Prevents returning to the login activity
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_up)
+
     }
 
     private fun navigateToForgotPasswordActivity() {
         //NOTE: Here, we can add '2' at the end to use the dynamic linking approach.
         val intent = Intent(this, ForgotPasswordActivity::class.java)
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_up)
     }
 
     private fun showToast(message: String) {
@@ -117,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun configurePasswordVisibilityToggle(
         passwordEditText: EditText,
-        toggleButton: Button
+        toggleButton: ImageView
     ) {
         var isPasswordVisible = false
 
@@ -161,6 +165,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         handleActivityResult(requestCode, resultCode, data)
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

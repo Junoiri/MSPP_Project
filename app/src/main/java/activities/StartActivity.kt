@@ -24,12 +24,14 @@ class StartActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val intent = Intent(this@StartActivity, LoginActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         val registerButton = findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener {
             val intent = Intent(this@StartActivity, RegisterActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
     }

@@ -1,20 +1,71 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MSPP_Project" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Theme.MSPP_Project" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/defaultBlack</item>
+        <item name="colorPrimaryDark">@color/defaultBlack</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:navigationBarColor">@color/defaultBlack</item>
     </style>
 
-    <style name="Theme.MSPP_Project" parent="Base.Theme.MSPP_Project" />
-
     <style name="BlueButton" parent="Widget.MaterialComponents.Button">
-    <item name="backgroundTint">@null</item>
-    <item name="android:background">@color/blue</item>
-    <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded</item>
-</style>
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/blue</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
 
-<style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
-    <item name="cornerFamily">rounded</item>
-    <item name="cornerSize">50dp</item>
-</style>
+    <style name="PinkButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/pink</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
+
+    <style name="YellowButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/yellow</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
+
+    <style name="GreenButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/green</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
+
+    <style name="PurpleButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/purple</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
+
+    <style name="OrangeButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/orange</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
+
+    <style name="RedButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@color/red</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded
+        </item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50dp</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/defaultBlack</item>
+        <item name="colorPrimaryDark">@color/defaultBlack</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:navigationBarColor">@color/defaultBlack</item>
+    </style>
 </resources>

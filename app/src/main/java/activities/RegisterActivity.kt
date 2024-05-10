@@ -79,7 +79,6 @@ class RegisterActivity : AppCompatActivity() {
         nameEditText = findViewById(R.id.name_edit_text)
         surnameEditText = findViewById(R.id.surname_edit_text)
         dobEditText = findViewById(R.id.dob_edit_text)
-        idNumberEditText = findViewById(R.id.id_number_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
         registerButton = findViewById(R.id.register_button)
         passwordVisibilityToggle = findViewById(R.id.password_visibility_toggle)
@@ -159,16 +158,16 @@ class RegisterActivity : AppCompatActivity() {
         val specialCharacters = "!@#\$%^&*()_+-=<>?/\\|{}[]:;\"'"
 
         icons[0].setImageResource(
-            if (password.length >= 8) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.length >= 8) R.drawable.ic_check_g else R.drawable.ic_close
         )
         icons[1].setImageResource(
-            if (password.any { it.isUpperCase() }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.any { it.isUpperCase() }) R.drawable.ic_check_g else R.drawable.ic_close
         )
         icons[2].setImageResource(
-            if (password.any { it.isDigit() }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.any { it.isDigit() }) R.drawable.ic_check_g else R.drawable.ic_close
         )
         icons[3].setImageResource(
-            if (password.any { it in specialCharacters }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.any { it in specialCharacters }) R.drawable.ic_check_g else R.drawable.ic_close
         )
     }
 
@@ -212,10 +211,9 @@ class RegisterActivity : AppCompatActivity() {
         val name = nameEditText.text.toString().trim()
         val surname = surnameEditText.text.toString().trim()
         val dob = dobEditText.text.toString().trim()
-        val idNumber = idNumberEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
 
-        if (validateInput(email, name, surname, dob, idNumber, password)) {
+        if (validateInput(email, name, surname, dob, password)) {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -226,7 +224,6 @@ class RegisterActivity : AppCompatActivity() {
                             "name" to name,
                             "surname" to surname,
                             "dob" to dob,
-                            "idNumber" to idNumber
                         )
                         saveUserToFirestore(userData)
                     } else {
@@ -252,6 +249,7 @@ class RegisterActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
+        overridePendingTransition(R.anim.slide_left, R.anim.slide_right)
     }
 
     private fun validateInput(
@@ -259,7 +257,6 @@ class RegisterActivity : AppCompatActivity() {
         name: String,
         surname: String,
         dob: String,
-        idNumber: String,
         password: String
     ): Boolean {
         return when {
@@ -354,6 +351,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

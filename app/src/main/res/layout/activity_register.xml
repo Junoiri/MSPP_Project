@@ -2,12 +2,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/defaultBlack">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -25,7 +27,9 @@
             android:id="@+id/name_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:hint="Name"
+            android:textColorHint="@color/white"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Surname"
+            android:textColorHint="@color/white"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Email"
+            android:textColorHint="@color/white"
             android:inputType="textEmailAddress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,21 +66,10 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:hint="Date of Birth"
+            android:textColorHint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/email_edit_text"
-            app:layout_constraintWidth_percent="0.9" />
-
-        <EditText
-            android:id="@+id/id_number_edit_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="ID Number (PESEL)"
-            android:inputType="number"
-            android:maxLength="11"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dob_edit_text"
             app:layout_constraintWidth_percent="0.9" />
 
         <EditText
@@ -84,10 +79,11 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="100dp"
             android:hint="Password"
+            android:textColorHint="@color/white"
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/id_number_edit_text" />
+            app:layout_constraintTop_toBottomOf="@id/dob_edit_text" />
 
         <ImageView
             android:id="@+id/password_visibility_toggle"
@@ -100,13 +96,13 @@
             app:layout_constraintStart_toEndOf="@id/password_edit_text"
             app:layout_constraintTop_toTopOf="@id/password_edit_text" />
 
-
         <!-- Linear Layout for Condition 1 with constraints -->
         <LinearLayout
             android:id="@+id/condition_1_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/password_edit_text">
@@ -115,14 +111,17 @@
                 android:id="@+id/condition_1_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_cross_black" />
+                android:layout_marginLeft="20dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_close" />
 
             <TextView
                 android:id="@+id/condition_1_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="At least 8 characters" />
+                android:text="At least 8 characters"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Linear Layout for Condition 2 with constraints -->
@@ -139,14 +138,17 @@
                 android:id="@+id/condition_2_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_cross_black" />
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_close" />
 
             <TextView
                 android:id="@+id/condition_2_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="At least 1 number" />
+                android:text="At least 1 number"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Linear Layout for Condition 3 with constraints -->
@@ -163,14 +165,17 @@
                 android:id="@+id/condition_3_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_cross_black" />
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_close" />
 
             <TextView
                 android:id="@+id/condition_3_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="At least 1 special character" />
+                android:text="At least 1 special character"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Linear Layout for Condition 4 with constraints -->
@@ -187,21 +192,28 @@
                 android:id="@+id/condition_4_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_cross_black" />
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_close" />
 
             <TextView
                 android:id="@+id/condition_4_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="At least 1 uppercase letter" />
+                android:text="At least 1 uppercase letter"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <Button
+            style="@style/PurpleButton"
             android:id="@+id/register_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Register"
+            android:textColor="@color/black"
+            android:background="@drawable/button_shape_pu"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/condition_4_layout"
@@ -214,7 +226,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Already have an account? Log in"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -225,10 +237,10 @@
             android:id="@+id/textView_signInWith"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="120dp"
             android:gravity="center"
             android:text="Or sign-in with:"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/purple"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -251,8 +263,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="16dp"
-                android:clickable="true"
                 android:background="@drawable/ic_google_color"
+                android:clickable="true"
                 android:focusable="true" />
 
             <ImageView
