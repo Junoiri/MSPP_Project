@@ -14,7 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 
 /**
- * This activity is responsible for adding vaccination records.
+ * This activity is responsible for adding vaccination records or schedules.
  * It provides two main functionalities: adding a vaccination record and scheduling an upcoming vaccination.
  * The user can switch between these two functionalities using two buttons: `vaccinationRecordButton` and `upcomingVaccinationButton`.
  */
