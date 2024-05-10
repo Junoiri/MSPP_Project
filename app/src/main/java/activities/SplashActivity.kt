@@ -20,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_up, R.anim.slide_out_up)
+            overridePendingTransition(R.anim.slide_up, R.anim.slide_out_up_splash)
         }, 5000) // delay of 5 seconds
     }
 }

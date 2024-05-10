@@ -104,8 +104,8 @@ class LoginActivity : AppCompatActivity() {
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish() // Prevents returning to the login activity
-        overridePendingTransition(R.anim.slide_up, R.anim.slide_up)
+        finish()
+        overridePendingTransition(R.anim.slide_out_up, R.anim.slide_in_up)
 
     }
 

@@ -56,8 +56,8 @@ class MainActivity : AppCompatActivity() {
         expandedToolbar.visibility = View.GONE
 
         // Load the animations
-        slideRight = AnimationUtils.loadAnimation(this, R.anim.slide_right)
-        slideLeft = AnimationUtils.loadAnimation(this, R.anim.slide_left)
+        slideRight = AnimationUtils.loadAnimation(this, R.anim.slide_in_left)
+        slideLeft = AnimationUtils.loadAnimation(this, R.anim.slide_out_left)
 
         setupMenuButton()
         setupFabButton()
@@ -117,9 +117,21 @@ private fun setupMenuButton() {
             startActivity(intent)
         }
     }
-    private fun setupCloseButton() {
-        closeButton.setOnClickListener {
-            expandedToolbar.visibility = View.GONE
-        }
+private fun setupCloseButton() {
+    closeButton.setOnClickListener {
+        slideLeft = AnimationUtils.loadAnimation(this, R.anim.slide_out_left)
+        slideLeft.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
+            }
+
+            override fun onAnimationEnd(animation: Animation) {
+                expandedToolbar.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {
+            }
+        })
+        expandedToolbar.startAnimation(slideLeft)
     }
+}
 }
