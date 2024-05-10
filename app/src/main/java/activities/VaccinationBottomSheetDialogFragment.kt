@@ -1,13 +1,12 @@
 package activities
 
 import VaccinationAdapter
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.app.Dialog
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mspp_project.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -60,6 +59,7 @@ class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
     // Replace this with your actual database call
     private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
         // TODO: Implement the database call to get the vaccinations for the given date
+        //procedure, queries, sf, implementation
         return emptyList()
     }
 }

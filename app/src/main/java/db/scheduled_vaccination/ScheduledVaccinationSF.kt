@@ -42,22 +42,21 @@ object ScheduledVaccinationSF {
         }
     }
 
-    suspend fun updateScheduledVaccination(schedule_id: Int, scheduledVaccination: ScheduledVaccination, context: Context) {
-        withContext(Dispatchers.IO) {
+    suspend fun updateScheduledVaccination(
+        schedule_id: Int,
+        scheduledVaccination: ScheduledVaccination
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
             val scheduledVaccinationQueries = ScheduledVaccinationQueries(connection)
             val result = scheduledVaccinationQueries.updateScheduledVaccination(schedule_id, scheduledVaccination)
             connection.close()
 
-            withContext(Dispatchers.Main) {
-                if (result) {
-                    Toast.makeText(context, "Schedule updated", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Schedule update failed", Toast.LENGTH_SHORT).show()
-                }
-            }
+            // Return true if the update was successful, false otherwise
+            result
         }
     }
+
 
     suspend fun getScheduleVaccine(user_id: Int): Set<ScheduledVaccination?>? {
         return withContext(Dispatchers.IO) {
