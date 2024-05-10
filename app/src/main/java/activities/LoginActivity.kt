@@ -39,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleAuthManager: GoogleAuthManager
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -112,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
         //NOTE: Here, we can add '2' at the end to use the dynamic linking approach.
         val intent = Intent(this, ForgotPasswordActivity::class.java)
         startActivity(intent)
-        overridePendingTransition(R.anim.slide_up, R.anim.slide_up)
+        overridePendingTransition(R.anim.slide_right, R.anim.slide_left)
     }
 
     private fun showToast(message: String) {
@@ -120,21 +121,23 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun configurePasswordVisibilityToggle(
-        passwordEditText: EditText,
-        toggleButton: ImageView
-    ) {
-        var isPasswordVisible = false
+    passwordEditText: EditText,
+    toggleButton: ImageView
+) {
+    var isPasswordVisible = false
 
-        toggleButton.setOnClickListener {
-            isPasswordVisible = !isPasswordVisible
-            passwordEditText.transformationMethod = if (isPasswordVisible) {
-                HideReturnsTransformationMethod.getInstance()
-            } else {
-                PasswordTransformationMethod.getInstance()
-            }
-            passwordEditText.setSelection(passwordEditText.text.length)
+    toggleButton.setOnClickListener {
+        isPasswordVisible = !isPasswordVisible
+        passwordEditText.transformationMethod = if (isPasswordVisible) {
+            toggleButton.setImageResource(R.drawable.ic_visibility_on)
+            HideReturnsTransformationMethod.getInstance()
+        } else {
+            toggleButton.setImageResource(R.drawable.ic_visibility_off)
+            PasswordTransformationMethod.getInstance()
         }
+        passwordEditText.setSelection(passwordEditText.text.length)
     }
+}
 
     private fun initializeAuthManagers() {
         val clientId = getString(R.string.client_id)

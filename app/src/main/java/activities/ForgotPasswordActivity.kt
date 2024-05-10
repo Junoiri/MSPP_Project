@@ -45,6 +45,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private fun setEventListeners() {
         buttonClose.setOnClickListener {
             finish() // Close the activity when clicking the close button
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
         buttonRecoverPassword.setOnClickListener {
             recoverPassword() // Trigger password recovery
@@ -85,6 +86,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
         isResumed = true
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
     override fun onResume() {
         super.onResume()
         // If the activity is being resumed, navigate to the LoginActivity
@@ -92,6 +98,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+
         }
     }
 }
