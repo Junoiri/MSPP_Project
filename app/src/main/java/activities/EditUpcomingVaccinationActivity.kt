@@ -1,21 +1,34 @@
 package activities
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mspp_project.R
-import android.util.Log
-import android.widget.EditText
-import android.widget.Toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.shawnlin.numberpicker.NumberPicker
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.shawnlin.numberpicker.NumberPicker
+import db.scheduled_vaccination.ScheduledVaccination
+import db.scheduled_vaccination.ScheduledVaccinationSF
+import db.user.UserSF
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.Date
 
 class EditUpcomingVaccinationActivity : AppCompatActivity() {
+    private var userEmail = Firebase.auth.currentUser?.email.toString()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_upcoming_vaccination)
@@ -31,11 +44,7 @@ class EditUpcomingVaccinationActivity : AppCompatActivity() {
         val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
 
-        // TODO: Connect with database - display vaccination data
-        // vaccineName.setText(vaccine.name)
-        // manufacturer.setText(vaccine.manufacturer)
-        // dateAdministeredButton.text = "Date administered: ${vaccine.dateAdministered}"
-        // nextDoseDueDateButton.text = "Next dose due date: ${vaccine.nextDoseDueDate}"
+
     }
 
     private fun setupToolbar() {
@@ -55,7 +64,7 @@ class EditUpcomingVaccinationActivity : AppCompatActivity() {
         val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         dateAdministeredButton.setOnClickListener {
             val datePickerDialog = DatePickerDialog(this)
-            datePickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
+            datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
                 // Display the selected date on the button
                 val selectedDate = "$dayOfMonth/${month + 1}/$year"
                 dateAdministeredButton.text = "Date administered: $selectedDate"
@@ -66,7 +75,7 @@ class EditUpcomingVaccinationActivity : AppCompatActivity() {
         val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
         nextDoseDueDateButton.setOnClickListener {
             val datePickerDialog = DatePickerDialog(this)
-            datePickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
+            datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
                 // Display the selected date on the button
                 val selectedDate = "$dayOfMonth/${month + 1}/$year"
                 nextDoseDueDateButton.text = "Next dose due date: $selectedDate"
@@ -92,7 +101,7 @@ class EditUpcomingVaccinationActivity : AppCompatActivity() {
         totalDosesNumberPicker.isAccessibilityDescriptionEnabled = true
 
         // When the value of the first number picker changes, update the maximum value of the second number picker and enable it
-        totalDosesNumberPicker.setOnValueChangedListener { picker, oldVal, newVal ->
+        totalDosesNumberPicker.setOnValueChangedListener { _, _, newVal ->
             dosesTakenNumberPicker.maxValue = newVal
             dosesTakenNumberPicker.isEnabled = true
         }
@@ -139,8 +148,50 @@ class EditUpcomingVaccinationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, "Vaccination saved!", Toast.LENGTH_SHORT).show()
-            finish()
+            val scheduleId = intent.getIntExtra("scheduleId", -1)
+            if (scheduleId != -1) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        val userId = getId(userEmail)
+                        userId?.let {
+                            val scheduledVaccination = ScheduledVaccination(
+                                schedule_id = scheduleId,
+                                vaccine_name = vaccineNameText,
+                                schedule_date = Date.valueOf(dateAdministeredText),
+                                manufacturer = manufacturerText,
+                                dose = nextDoseDueDateText,
+                                user_id = userId
+                            )
+
+                            updateScheduledVaccination(scheduleId, scheduledVaccination, applicationContext)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(this@EditUpcomingVaccinationActivity, "Failed to get user ID", Toast.LENGTH_SHORT).show()
+                        Log.e("EditUpcomingVaccination", "Error: ${e.message}")
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Invalid Schedule ID", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private suspend fun getId(email: String): Int? {
+        return withContext(Dispatchers.IO) {
+            UserSF.getId(email)
+        }
+    }
+
+    private suspend fun updateScheduledVaccination(schedule_id: Int, scheduledVaccination: ScheduledVaccination, context: Context) {
+        withContext(Dispatchers.IO) {
+            val result = ScheduledVaccinationSF.updateScheduledVaccination(schedule_id, scheduledVaccination)
+            withContext(Dispatchers.Main) {
+                if (result) {
+                    Toast.makeText(context, "Schedule updated", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Schedule update failed", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

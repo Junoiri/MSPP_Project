@@ -184,7 +184,6 @@ class VaccinationRecordFragment : Fragment() {
                         user_id = null // Set user ID later
                     )
 
-                    // TODO: save to db
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
                             val userId = getId(userEmail)
