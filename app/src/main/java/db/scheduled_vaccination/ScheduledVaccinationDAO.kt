@@ -1,4 +1,7 @@
 package db.scheduled_vaccination
+/**
+ * Interface for accessing and managing PHP schedule vaccination related procedures in the database.
+ */
 
 import java.sql.Date
 

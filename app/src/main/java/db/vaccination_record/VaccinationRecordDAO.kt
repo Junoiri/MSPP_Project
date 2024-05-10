@@ -1,4 +1,7 @@
 package db.vaccination_record
+/**
+ * Interface for accessing and managing PHP vaccination record related procedures in the database.
+ */
 
 import java.sql.Date
 

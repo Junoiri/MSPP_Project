@@ -7,8 +7,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.sql.Date
 
+/**
+ * Object for performing scheduled vaccination operations with a SQL database.
+ */
 object ScheduledVaccinationSF {
 
+    /**
+     * Inserts a new scheduled vaccination into the database.
+     */
     suspend fun insertSchedule(scheduledVaccination: ScheduledVaccination, context: Context) {
         withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
@@ -16,16 +22,17 @@ object ScheduledVaccinationSF {
             val result = scheduledVaccinationQueries.insertSchedule(scheduledVaccination)
             connection.close()
 
+            // Show toast message based on the insertion result
             withContext(Dispatchers.Main) {
-                if (result) {
-                    Toast.makeText(context, "Schedule inserted", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Schedule insertion failed", Toast.LENGTH_SHORT).show()
-                }
+                val message = if (result) "Schedule inserted" else "Schedule insertion failed"
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    /**
+     * Deletes a scheduled vaccination from the database by its ID.
+     */
     suspend fun deleteSchedule(schedule_id: Int): Boolean {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
@@ -36,11 +43,10 @@ object ScheduledVaccinationSF {
         }
     }
 
-
-    suspend fun updateScheduledVaccination(
-        schedule_id: Int,
-        scheduledVaccination: ScheduledVaccination
-    ): Boolean {
+    /**
+     * Updates an existing scheduled vaccination in the database.
+     */
+    suspend fun updateScheduledVaccination(schedule_id: Int, scheduledVaccination: ScheduledVaccination): Boolean {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
             val scheduledVaccinationQueries = ScheduledVaccinationQueries(connection)
@@ -52,7 +58,9 @@ object ScheduledVaccinationSF {
         }
     }
 
-
+    /**
+     * Retrieves scheduled vaccinations for a specific user from the database.
+     */
     suspend fun getScheduleVaccine(user_id: Int): Set<ScheduledVaccination?>? {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
@@ -62,6 +70,10 @@ object ScheduledVaccinationSF {
             result
         }
     }
+
+    /**
+     * Retrieves scheduled vaccinations for a specific user on a given date from the database.
+     */
     suspend fun getScheduledVaccinationsByDate(user_id: Int, date: Date): Set<ScheduledVaccination?>? {
         return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
@@ -71,5 +83,4 @@ object ScheduledVaccinationSF {
             result
         }
     }
-
 }

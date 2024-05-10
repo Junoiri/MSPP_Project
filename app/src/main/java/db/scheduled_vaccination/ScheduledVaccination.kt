@@ -1,6 +1,9 @@
 package db.scheduled_vaccination
 
 import java.sql.Date
+/**
+ * Represents a scheduled vaccination entry in the database.
+ */
 
 data class ScheduledVaccination(
     val schedule_id: Int? =null,

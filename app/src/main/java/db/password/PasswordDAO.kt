@@ -1,5 +1,7 @@
 package db.password
-
+/**
+ * Interface for accessing and managing procedures implemented in php password data in the database.
+ */
 interface PasswordDAO {
 
     fun getPassword(password_id: Int): Password?
