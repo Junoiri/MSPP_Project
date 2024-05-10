@@ -6,4 +6,15 @@
     </style>
 
     <style name="Theme.MSPP_Project" parent="Base.Theme.MSPP_Project" />
+
+    <style name="BlueButton" parent="Widget.MaterialComponents.Button">
+    <item name="backgroundTint">@null</item>
+    <item name="android:background">@color/blue</item>
+    <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Rounded</item>
+</style>
+
+<style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">50dp</item>
+</style>
 </resources>

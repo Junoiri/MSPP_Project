@@ -31,5 +31,11 @@ class StartActivity : AppCompatActivity() {
             val intent = Intent(this@StartActivity, RegisterActivity::class.java)
             startActivity(intent)
         }
+
     }
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+    super.onBackPressed()
+    overridePendingTransition(R.anim.slide_out_up, R.anim.slide_up)
+}
 }
