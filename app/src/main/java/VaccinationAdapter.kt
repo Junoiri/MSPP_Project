@@ -1,12 +1,19 @@
+import android.content.Context
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mspp_project.R
-import db.scheduled_vaccination.ScheduledVaccination
-import android.transition.TransitionManager
-import android.widget.ImageButton
 import com.google.android.material.snackbar.Snackbar
+import db.scheduled_vaccination.ScheduledVaccination
+import db.scheduled_vaccination.ScheduledVaccinationSF
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class VaccinationAdapter(private val vaccinations: List<ScheduledVaccination>) :
     RecyclerView.Adapter<VaccinationAdapter.VaccinationViewHolder>() {
@@ -39,29 +46,26 @@ class VaccinationAdapter(private val vaccinations: List<ScheduledVaccination>) :
                 }
             }
 
-
-            //TODO: Set up the click listener to EditVaccinationRecord or EditUpcomingVaccination based on the date of the vaccination - database
             editButton.setOnClickListener {
-                val context = it.context
-//                val intent = Intent(context, EditVaccinationActivity::class.java)
-                // Pass any extra data to EditVaccineActivity if needed
-                // For example, you might want to pass the ID of the vaccination to be edited
-                // intent.putExtra("VACCINATION_ID", vaccination.id)
-//                context.startActivity(intent)
+                // Handle editing of vaccination record
+                val vaccination = vaccinations[adapterPosition]
+                val context = itemView.context
+                vaccination.schedule_date?.let { scheduleDate ->
+                    if (scheduleDate.time > getCurrentDate().time) {
+                        // If the vaccination date is in the future, navigate to EditUpcomingVaccination
+                        navigateToEditUpcomingVaccination(context, vaccination)
+                    } else {
+                        // If the vaccination date is in the past, navigate to EditVaccinationRecord
+                        navigateToEditVaccinationRecord(context, vaccination)
+                    }
+                }
             }
 
             deleteButton.setOnClickListener {
-                Snackbar.make(
-                    it,
-                    "Do you want to remove vaccination from the calendar?",
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAction("Yes") { _ ->
-                        // Perform the deletion here
-                        // For example, you might want to call a method in your ViewModel or Repository to delete the vaccination from the database
-                        // viewModel.deleteVaccination(vaccination.id)
-                    }
-                    .show()
+                // Handle deletion of vaccination record
+                val vaccination = vaccinations[adapterPosition]
+                val context = itemView.context
+                showDeleteConfirmationSnackbar(context, vaccination)
             }
         }
 
@@ -71,6 +75,55 @@ class VaccinationAdapter(private val vaccinations: List<ScheduledVaccination>) :
             // itemView.findViewById<TextView>(R.id.date_administrated).text = vaccination.dateAdministered
             // itemView.findViewById<TextView>(R.id.next_dose_due_date).text = vaccination.nextDoseDueDate
             // etc.
+        }
+
+        private fun getCurrentDate(): Date {
+            return Date()
+        }
+
+        private fun navigateToEditUpcomingVaccination(context: Context, vaccination: ScheduledVaccination) {
+            // Navigate to EditUpcomingVaccinationActivity
+            // val intent = Intent(context, EditUpcomingVaccinationActivity::class.java)
+            // Add any necessary extras to the intent
+            // context.startActivity(intent)
+        }
+
+        private fun navigateToEditVaccinationRecord(context: Context, vaccination: ScheduledVaccination) {
+            // Navigate to EditVaccinationRecordActivity
+            // val intent = Intent(context, EditVaccinationRecordActivity::class.java)
+            // Add any necessary extras to the intent
+            // context.startActivity(intent)
+        }
+
+        private fun showDeleteConfirmationSnackbar(context: Context, vaccination: ScheduledVaccination) {
+            Snackbar.make(
+                itemView,
+                "Do you want to remove vaccination from the calendar?",
+                Snackbar.LENGTH_LONG
+            )
+                .setAction("Yes") { _ ->
+                    // Perform the deletion here
+                    deleteVaccination(context, vaccination)
+                }
+                .show()
+        }
+
+        private fun deleteVaccination(context: Context, vaccination: ScheduledVaccination) {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val result = ScheduledVaccinationSF.deleteSchedule(vaccination.schedule_id ?: -1)
+                    if (result) {
+                        // Deletion successful
+                        Toast.makeText(context, "Schedule deleted", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Deletion failed
+                        Toast.makeText(context, "Schedule deletion failed", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    // Handle any exceptions here
+                    Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

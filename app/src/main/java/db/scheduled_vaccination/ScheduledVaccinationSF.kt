@@ -26,22 +26,16 @@ object ScheduledVaccinationSF {
         }
     }
 
-    suspend fun deleteSchedule(schedule_id: Int, context: Context) {
-        withContext(Dispatchers.IO) {
+    suspend fun deleteSchedule(schedule_id: Int): Boolean {
+        return withContext(Dispatchers.IO) {
             val connection = DConnection.getConnection()
             val scheduledVaccinationQueries = ScheduledVaccinationQueries(connection)
             val result = scheduledVaccinationQueries.deleteSchedule(schedule_id)
             connection.close()
-
-            withContext(Dispatchers.Main) {
-                if (result) {
-                    Toast.makeText(context, "Schedule deleted", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Schedule deletion failed", Toast.LENGTH_SHORT).show()
-                }
-            }
+            result
         }
     }
+
 
     suspend fun updateScheduledVaccination(
         schedule_id: Int,

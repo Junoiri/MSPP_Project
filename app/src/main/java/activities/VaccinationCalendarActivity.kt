@@ -1,12 +1,8 @@
 package activities
 
 import CalendarAdapter
-import VaccinationAdapter
-import android.app.AlertDialog
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,17 +11,27 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mspp_project.R
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import db.scheduled_vaccination.ScheduledVaccination
+import db.scheduled_vaccination.ScheduledVaccinationSF
+import db.user.UserSF
+import db.vaccination_record.VaccinationRecord
+import db.vaccination_record.VaccinationRecordSF
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.Date
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.ArrayList
 
 @RequiresApi(Build.VERSION_CODES.O)
 class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
+    private var userEmail = Firebase.auth.currentUser?.email.toString()
     private lateinit var monthYearText: TextView
     private lateinit var calendarRecyclerView: RecyclerView
     private lateinit var selectedDate: LocalDate
@@ -113,45 +119,64 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         if (!dayText.isNullOrEmpty()) {
             val selectedDateText = "Selected Date: $dayText ${monthYearFromDate(selectedDate)}"
 
-            // Get the vaccinations from the database for the selected day
-            // This is a placeholder and you need to replace it with your actual database call
-            val vaccinations = getVaccinationsForDate(selectedDateText)
+            // Get the user ID
+            GlobalScope.launch(Dispatchers.Main) {
+                val userId = getId(userEmail)
+                if (userId != null) {
+                    // Get the scheduled vaccinations for the selected date
+                    val scheduleDate = Date.valueOf(selectedDate.toString())
+                    val scheduledVaccinations = ScheduledVaccinationSF.getScheduledVaccinationsByDate(userId, scheduleDate)
 
-            if (vaccinations.isNotEmpty()) {
-                // If the BottomSheetDialogFragment is not currently displayed, create a new instance
-                if (bottomSheetDialogFragment == null) {
-                    bottomSheetDialogFragment = VaccinationBottomSheetDialogFragment()
+                    // Get the vaccination records for the selected date
+                    val vaccinationRecords = VaccinationRecordSF.getVaccinationRecordsByDate(userId, scheduleDate)
 
-                    // Create a Bundle to hold the selected date
-                    val bundle = Bundle()
-                    bundle.putString("selectedDate", selectedDateText)
-
-                    // Set the Bundle as an argument to the fragment
-                    bottomSheetDialogFragment!!.arguments = bundle
-
-                    // Show the BottomSheetDialogFragment
-                    bottomSheetDialogFragment!!.show(
-                        supportFragmentManager,
-                        "VaccinationBottomSheetDialog"
-                    )
+                    // Process the data as needed
+                    handleData(selectedDateText, scheduledVaccinations, vaccinationRecords)
                 } else {
-                    // If the BottomSheetDialogFragment is currently displayed, update its content
-                    bottomSheetDialogFragment!!.requireArguments()
-                        .putString("selectedDate", selectedDateText)
-                    bottomSheetDialogFragment!!.updateContent()
+                    Toast.makeText(this@VaccinationCalendarActivity, "User ID not found", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(this, "No vaccinations scheduled for this date.", Toast.LENGTH_SHORT)
-                    .show()
             }
         }
     }
 
-    // TODO: Placeholder method to get vaccinations from the database
-// Replace this with your actual database call
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
-        // TODO: Implement the database call to get the vaccinations for the given date
-        return emptyList()
+    private suspend fun getId(email: String): Int? {
+        return withContext(Dispatchers.IO) {
+            UserSF.getId(email)
+        }
+    }
+
+    private fun handleData(
+        selectedDateText: String,
+        scheduledVaccinations: Set<ScheduledVaccination?>?,
+        vaccinationRecords: Set<VaccinationRecord?>?
+    ) {
+        if (scheduledVaccinations != null && scheduledVaccinations.isNotEmpty()) {
+            // If the BottomSheetDialogFragment is not currently displayed, create a new instance
+            if (bottomSheetDialogFragment == null) {
+                bottomSheetDialogFragment = VaccinationBottomSheetDialogFragment()
+
+                // Create a Bundle to hold the selected date
+                val bundle = Bundle()
+                bundle.putString("selectedDate", selectedDateText)
+                bundle.putSerializable("scheduledVaccinations", scheduledVaccinations.toTypedArray())
+                bundle.putSerializable("vaccinationRecords", vaccinationRecords?.toTypedArray())
+
+                // Set the Bundle as an argument to the fragment
+                bottomSheetDialogFragment!!.arguments = bundle
+
+                // Show the BottomSheetDialogFragment
+                bottomSheetDialogFragment!!.show(
+                    supportFragmentManager,
+                    "VaccinationBottomSheetDialog"
+                )
+            } else {
+                // If the BottomSheetDialogFragment is currently displayed, update its content
+                bottomSheetDialogFragment!!.requireArguments().putString("selectedDate", selectedDateText)
+                bottomSheetDialogFragment!!.updateContent()
+            }
+        } else {
+            Toast.makeText(this@VaccinationCalendarActivity, "No vaccinations scheduled for this date.", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 }
