@@ -85,38 +85,45 @@ private fun setupMenuButton() {
 }
 
     private fun setupFabButton() {
-        fabAddNew.setOnClickListener {
-            val intent = Intent(this, AddVaccinationActivity::class.java)
-            startActivity(intent)
-        }
+    fabAddNew.setOnClickListener {
+        val intent = Intent(this, AddVaccinationActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.pop_in, R.anim.pop_out)
     }
-    private fun setupSettingsButton() {
-        navSettings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
-    }
-    private fun setupUserProfileButton() {
-        navUserProfile.setOnClickListener {
-            val intent = Intent(this, UserProfileActivity::class.java)
-            startActivity(intent)
-        }
-    }
+}
 
-    private fun setupVaccinationHistoryButton() {
-        navVaccinationHistory.setOnClickListener {
-            val intent = Intent(this, VaccinationHistoryActivity::class.java)
-            startActivity(intent)
-        }
+private fun setupSettingsButton() {
+    navSettings.setOnClickListener {
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.pop_in, R.anim.pop_out)
     }
+}
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setupVaccinationCalendarButton() {
-        navVaccinationCalendar.setOnClickListener {
-            val intent = Intent(this, VaccinationCalendarActivity::class.java)
-            startActivity(intent)
-        }
+private fun setupUserProfileButton() {
+    navUserProfile.setOnClickListener {
+        val intent = Intent(this, UserProfileActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.pop_in, R.anim.pop_out)
     }
+}
+
+private fun setupVaccinationHistoryButton() {
+    navVaccinationHistory.setOnClickListener {
+        val intent = Intent(this, VaccinationHistoryActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.pop_in, R.anim.pop_out)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun setupVaccinationCalendarButton() {
+    navVaccinationCalendar.setOnClickListener {
+        val intent = Intent(this, VaccinationCalendarActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.pop_in, R.anim.pop_out)
+    }
+}
 private fun setupCloseButton() {
     closeButton.setOnClickListener {
         slideLeft = AnimationUtils.loadAnimation(this, R.anim.slide_out_left)
