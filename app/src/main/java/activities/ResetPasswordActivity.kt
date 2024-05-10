@@ -24,6 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * This activity is responsible for resetting the user's password.
+ */
 class ResetPasswordActivity : AppCompatActivity() {
 
     private var userEmail = Firebase.auth.currentUser?.email.toString()
@@ -39,7 +42,9 @@ class ResetPasswordActivity : AppCompatActivity() {
     private lateinit var conditionNumberIcon: ImageView
     private lateinit var conditionSpecialCharIcon: ImageView
 
-
+    /**
+     * Initializes the activity view, Firebase Authentication, and sets up event listeners.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
@@ -54,6 +59,9 @@ class ResetPasswordActivity : AppCompatActivity() {
         buttonSetNewPassword = findViewById(R.id.register_button)
     }
 
+    /**
+     * Initializes Firebase Authentication.
+     */
     private fun initializeFirebase() {
         mAuth = FirebaseAuth.getInstance()
     }
@@ -78,6 +86,9 @@ class ResetPasswordActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Toggles the visibility of the password in the password edit text.
+     */
     private fun togglePasswordVisibility() {
         if (newPasswordEditText.inputType ==
             InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
@@ -92,6 +103,9 @@ class ResetPasswordActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets the new password for the user.
+     */
     private fun setNewPassword() {
         val newPassword = newPasswordEditText.text.toString().trim()
 
@@ -106,32 +120,65 @@ class ResetPasswordActivity : AppCompatActivity() {
             if (user != null && userPId != null) {
                 val result = updatePassword(userPId, newPassword, applicationContext)
                 if (result) {
-                    Toast.makeText(this@ResetPasswordActivity, "Password updated successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@ResetPasswordActivity,
+                        "Password updated successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     startActivity(Intent(this@ResetPasswordActivity, LoginActivity::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this@ResetPasswordActivity, "Error updating password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@ResetPasswordActivity,
+                        "Error updating password",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     Log.e(TAG, "Error updating password")
                 }
             } else {
-                Toast.makeText(this@ResetPasswordActivity, "Failed to retrieve user information", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@ResetPasswordActivity,
+                    "Failed to retrieve user information",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.e(TAG, "Failed to retrieve user information")
             }
         }
     }
 
+    /**
+     * Retrieves the password ID for the given email.
+     * @param email The email to retrieve the password ID for.
+     * @return The password ID, or null if not found.
+     */
     private suspend fun getPId(email: String): Int? {
         return withContext(Dispatchers.IO) {
             UserSF.getPasswordId(email)
         }
     }
 
-    private suspend fun updatePassword(password_id: Int, newPassword: String, context: Context): Boolean {
+    /**
+     * Updates the password in the database.
+     * @param password_id The ID of the password to update.
+     * @param newPassword The new password.
+     * @param context The context to use.
+     * @return True if the password was updated successfully, false otherwise.
+     */
+    private suspend fun updatePassword(
+        password_id: Int,
+        newPassword: String,
+        context: Context
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             PasswordSF.updatePassword(password_id, newPassword, context)
         }
     }
 
+    /**
+     * Checks if the given password meets the requirements.
+     * The requirements are: at least 8 characters long, contains an uppercase letter, contains a digit, and contains a special character.
+     * @param password The password to check.
+     */
     private fun checkPasswordRequirements(password: String) {
         conditionMinCharsIcon.setImageResource(
             if (password.length >= 8) R.drawable.ic_check_black else R.drawable.ic_cross_black
@@ -152,6 +199,9 @@ class ResetPasswordActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Overrides the onResume method to navigate to the LoginActivity.
+     */
     override fun onResume() {
         super.onResume()
         val intent = Intent(this, LoginActivity::class.java)

@@ -26,11 +26,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.Date
 
+/**
+ * This activity is responsible for editing vaccination records.
+ * It provides functionalities: editing a vaccination record and updating it in the database.
+ */
 class EditVaccinationRecordActivity : AppCompatActivity() {
 
     private val vaccinationRecordQueries = VaccinationRecordQueries(DConnection.getConnection())
+
+    /**
+     * The email of the currently logged in user.
+     */
     private val userEmail = Firebase.auth.currentUser?.email.toString()
 
+    /**
+     * Initializes the activity view and sets up the toolbar, date picker, number picker and save button.
+     * It also populates the fields with the data from the vaccine variable.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_upcoming_vaccination)
@@ -55,14 +67,20 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
                 // Display fetched data
                 vaccineName.setText(vaccinationRecord?.vaccine_name ?: "")
                 manufacturer.setText(vaccinationRecord?.manufacturer ?: "")
-                dateAdministeredButton.text = "Date administered: ${vaccinationRecord?.date_administrated}"
-                nextDoseDueDateButton.text = "Next dose due date: ${vaccinationRecord?.next_dose_due_date}"
+                dateAdministeredButton.text =
+                    "Date administered: ${vaccinationRecord?.date_administrated}"
+                nextDoseDueDateButton.text =
+                    "Next dose due date: ${vaccinationRecord?.next_dose_due_date}"
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
+
+    /**
+     * Sets up the toolbar with a back button and a title.
+     */
     private fun setupToolbar() {
         val toolbar = findViewById<LinearLayout>(R.id.toolbar)
 
@@ -76,6 +94,9 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         titleTextView.text = "Edit Record"
     }
 
+    /**
+     * Sets up the date picker for the date administered and the next dose due date.
+     */
     private fun setupDatePicker() {
         val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         dateAdministeredButton.setOnClickListener {
@@ -100,6 +121,9 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the number picker for the total doses and doses taken.
+     */
     private fun setupNumberPicker() {
         val totalDosesNumberPicker: NumberPicker = findViewById(R.id.dose_total_number_picker)
         val dosesTakenNumberPicker: NumberPicker = findViewById(R.id.dose_taken_number_picker)
@@ -131,6 +155,9 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         dosesTakenNumberPicker.isAccessibilityDescriptionEnabled = true
     }
 
+    /**
+     * Sets up the save button to validate the input fields and update the vaccination record in the database.
+     */
     private fun setupSaveButton() {
         val saveButton: FloatingActionButton = findViewById(R.id.save_vaccination)
         val vaccineName: EditText = findViewById(R.id.vaccine_name)
@@ -160,7 +187,8 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
             }
 
             if (nextDoseDueDateText == "Select Next Dose Due Date") {
-                Toast.makeText(this, "Please select the next dose due date", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please select the next dose due date", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
@@ -172,43 +200,77 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
                     val vaccinationRecord = VaccinationRecord(
                         vaccine_name = vaccineNameText,
                         manufacturer = manufacturerText,
-                        date_administrated = Date.valueOf(dateAdministeredText.substringAfter(":").trim()),
-                        next_dose_due_date = Date.valueOf(nextDoseDueDateText.substringAfter(":").trim()),
+                        date_administrated = Date.valueOf(
+                            dateAdministeredText.substringAfter(":").trim()
+                        ),
+                        next_dose_due_date = Date.valueOf(
+                            nextDoseDueDateText.substringAfter(":").trim()
+                        ),
                         user_id = userId
                     )
 
                     // Update vaccination record
                     try {
-                        val recordId = vaccinationRecord.record_id ?: throw IllegalArgumentException("Record ID is null")
-                        val recordUpdated = updateRecord(recordId, vaccinationRecord, this@EditVaccinationRecordActivity)
+                        val recordId = vaccinationRecord.record_id
+                            ?: throw IllegalArgumentException("Record ID is null")
+                        val recordUpdated = updateRecord(
+                            recordId,
+                            vaccinationRecord,
+                            this@EditVaccinationRecordActivity
+                        )
                         if (recordUpdated) {
-                            Toast.makeText(this@EditVaccinationRecordActivity, "Vaccination record saved!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@EditVaccinationRecordActivity,
+                                "Vaccination record saved!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         } else {
-                            Toast.makeText(this@EditVaccinationRecordActivity, "Failed to save vaccination record", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@EditVaccinationRecordActivity,
+                                "Failed to save vaccination record",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Toast.makeText(this@EditVaccinationRecordActivity, "Failed to save vaccination record", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@EditVaccinationRecordActivity,
+                            "Failed to save vaccination record",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
     }
 
+    /**
+     * Retrieves the user ID from the database using the user's email.
+     */
     private suspend fun getId(email: String): Int? {
         return withContext(Dispatchers.IO) {
             UserSF.getId(email)
         }
     }
 
+    /**
+     * Retrieves the vaccination record from the database using the record ID.
+     */
     private suspend fun getRecord(recordId: Int): VaccinationRecord? {
         return withContext(Dispatchers.IO) {
             vaccinationRecordQueries.getRecord(recordId)
         }
     }
 
-    private suspend fun updateRecord(recordId: Int, vaccinationRecord: VaccinationRecord, context: Context): Boolean {
+    /**
+     * Updates the vaccination record in the database.
+     */
+    private suspend fun updateRecord(
+        recordId: Int,
+        vaccinationRecord: VaccinationRecord,
+        context: Context
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             val result = vaccinationRecordQueries.updateRecord(recordId, vaccinationRecord)
             withContext(Dispatchers.Main) {
@@ -222,6 +284,10 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Overrides the back button press to show a Snackbar asking the user to confirm their intention to quit.
+     * If the user confirms, the activity is finished.
+     */
     override fun onBackPressed() {
         val snackbar = Snackbar.make(
             findViewById(R.id.coordinator_layout),

@@ -13,9 +13,18 @@ import com.example.mspp_project.R
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 
+/**
+ * This activity is responsible for adding vaccination records.
+ * It provides two main functionalities: adding a vaccination record and scheduling an upcoming vaccination.
+ * The user can switch between these two functionalities using two buttons: `vaccinationRecordButton` and `upcomingVaccinationButton`.
+ */
 class AddVaccinationActivity : AppCompatActivity() {
     private lateinit var coordinatorLayout: CoordinatorLayout
 
+
+    /**
+     * Initializes the activity view and sets up the toolbar and view pager.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_vaccination)
@@ -26,6 +35,9 @@ class AddVaccinationActivity : AppCompatActivity() {
         setupViewPagerAndButtons()
     }
 
+    /**
+     * Sets up the view pager and the buttons for switching between adding a vaccination record and scheduling an upcoming vaccination.
+     */
     private fun setupViewPagerAndButtons() {
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
         viewPager.adapter = ViewPagerAdapter(this)
@@ -57,6 +69,7 @@ class AddVaccinationActivity : AppCompatActivity() {
                         upcomingVaccinationButton.isEnabled = true
                         coordinatorLayout.setBackgroundResource(R.drawable.background_add_1)
                     }
+
                     1 -> {
                         upcomingVaccinationButton.isEnabled = false
                         vaccinationRecordButton.isEnabled = true
@@ -67,6 +80,9 @@ class AddVaccinationActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Sets up the toolbar with a back button and a title.
+     */
     private fun setupToolbar() {
         val toolbar = findViewById<LinearLayout>(R.id.toolbar)
 
@@ -79,6 +95,11 @@ class AddVaccinationActivity : AppCompatActivity() {
         val titleTextView: TextView = toolbar.findViewById(R.id.toolbar_title)
         titleTextView.text = "Add Vaccination"
     }
+
+    /**
+     * Overrides the back button press to show a Snackbar asking the user to confirm their intention to quit.
+     * If the user confirms, the activity is finished and a transition animation is played.
+     */
     override fun onBackPressed() {
         val snackbar = Snackbar.make(
             findViewById(R.id.coordinator_layout),

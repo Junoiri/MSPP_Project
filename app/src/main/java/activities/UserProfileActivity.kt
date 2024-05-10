@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.regex.Pattern
 
+/**
+ * This activity is responsible for managing the user profile.
+ */
 class UserProfileActivity : AppCompatActivity() {
 
     private var userEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
@@ -35,6 +38,9 @@ class UserProfileActivity : AppCompatActivity() {
     private var userId: Int = -1
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
+    /**
+     * Initializes the activity view, sets up the views, click listeners, and updates the user.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
@@ -51,6 +57,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Initializes the views used in this activity.
+     */
     private fun initializeViews() {
         nameEditText = findViewById(R.id.name_edit_text)
         surnameEditText = findViewById(R.id.surname_edit_text)
@@ -63,6 +72,9 @@ class UserProfileActivity : AppCompatActivity() {
         backButton = toolbarLayout.findViewById(R.id.back_button)
     }
 
+    /**
+     * Sets up the click listeners for the back button and save button.
+     */
     private fun setupClickListeners() {
         backButton.setOnClickListener {
             finish()
@@ -71,12 +83,18 @@ class UserProfileActivity : AppCompatActivity() {
         saveButton.setOnClickListener { saveChanges() }
     }
 
+    /**
+     * Sets the activity name in the toolbar.
+     */
     private fun setActivityName() {
         val toolbarLayout = findViewById<LinearLayout>(R.id.toolbar)
         val titleTextView: TextView = toolbarLayout.findViewById(R.id.toolbar_title)
         titleTextView.text = "User Profile"
     }
 
+    /**
+     * Saves the changes made to the user profile.
+     */
     private fun saveChanges() {
         val name = nameEditText.text.toString()
         val surname = surnameEditText.text.toString()
@@ -90,6 +108,15 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Validates the input from the user.
+     * @param email The email to validate.
+     * @param name The name to validate.
+     * @param surname The surname to validate.
+     * @param dob The date of birth to validate.
+     * @param idNumber The ID number to validate.
+     * @return True if the input is valid, false otherwise.
+     */
     private fun validateInput(
         email: String,
         name: String,
@@ -124,6 +151,9 @@ class UserProfileActivity : AppCompatActivity() {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
+    /**
+     * Updates the user profile.
+     */
     private suspend fun updateUser() {
         val name: String = nameEditText.text.toString().trim()
         val surname: String = surnameEditText.text.toString().trim()
@@ -140,7 +170,11 @@ class UserProfileActivity : AppCompatActivity() {
         coroutineScope.launch {
             try {
                 val userId = getId(userEmail) ?: return@launch
-                val success = UserSF.updateUser(userId, User(null, name, surname, email, dob, null), this@UserProfileActivity)
+                val success = UserSF.updateUser(
+                    userId,
+                    User(null, name, surname, email, dob, null),
+                    this@UserProfileActivity
+                )
                 if (success) {
                     showToast("User updated successfully")
                 } else {
@@ -153,11 +187,22 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+
+    /**
+     * Checks if the given email is valid.
+     * @param email The email to check.
+     * @return True if the email is valid, false otherwise.
+     */
     private fun isValidEmail(email: String): Boolean {
         val pattern = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")
         return pattern.matcher(email).matches()
     }
 
+    /**
+     * Checks if the given date is valid.
+     * @param date The date to check.
+     * @return True if the date is valid, false otherwise.
+     */
     private fun isValidDate(date: String): Boolean {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         sdf.isLenient = false
@@ -174,10 +219,17 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Shows a toast message with the given message.
+     * @param message The message to show.
+     */
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Overrides the onBackPressed method to show a save changes snackbar and apply a custom transition animation.
+     */
     override fun onBackPressed() {
         SnackbarHelper.showSaveChangesSnackbar(
             this,

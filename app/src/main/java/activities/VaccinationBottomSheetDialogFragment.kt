@@ -12,10 +12,16 @@ import com.example.mspp_project.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import db.scheduled_vaccination.ScheduledVaccination
 
+/**
+ * This fragment is responsible for managing the bottom sheet dialog for vaccinations.
+ */
 class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private lateinit var dialogRecyclerView: RecyclerView
     private lateinit var dialogTitle: TextView
 
+    /**
+     * Initializes the fragment view, sets up the dialog title and recycler view.
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,11 +33,17 @@ class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
         return view
     }
 
+    /**
+     * Updates the content of the dialog after the view has been created.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateContent()
     }
 
+    /**
+     * Creates a dialog that is not cancelable on touch outside.
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setCanceledOnTouchOutside(false)
@@ -39,7 +51,9 @@ class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
         return dialog
     }
 
-    // Add a method to update the content of the BottomSheetDialogFragment
+    /**
+     * Updates the content of the dialog, sets the title to the selected date and updates the recycler view with the vaccinations for the selected date.
+     */
     fun updateContent() {
         // Retrieve the selected date from the Bundle
         val selectedDateText = requireArguments().getString("selectedDate")
@@ -55,8 +69,11 @@ class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
         dialogRecyclerView.adapter = adapter
     }
 
-    // TODO: Placeholder method to get vaccinations from the database
-    // Replace this with your actual database call
+    /**
+     * Retrieves the vaccinations for the given date.
+     * @param date The date to retrieve the vaccinations for.
+     * @return A list of vaccinations for the given date.
+     */
     private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
         // TODO: Implement the database call to get the vaccinations for the given date
         //procedure, queries, sf, implementation

@@ -24,6 +24,9 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 
+/**
+ * This activity is responsible for managing the vaccination calendar.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     private lateinit var monthYearText: TextView
@@ -32,6 +35,9 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
 
     private var bottomSheetDialogFragment: VaccinationBottomSheetDialogFragment? = null
 
+    /**
+     * Initializes the activity view, sets up the toolbar, initializes widgets, and sets the month view.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +48,12 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         setMonthView()
     }
 
+    /**
+     * Sets up the toolbar with a back button and title.
+     */
     private fun setupToolbar() {
         val toolbar = findViewById<LinearLayout>(R.id.toolbar)
 
-        // Find the back button from the included toolbar layout and set its click listener
         val backButton: ImageView = toolbar.findViewById(R.id.back_button)
         backButton.setOnClickListener {
             onBackPressed()
@@ -57,11 +65,18 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         titleTextView.text = "Calendar"
     }
 
+    /**
+     * Initializes the widgets used in this activity.
+     */
     private fun initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
         monthYearText = findViewById(R.id.monthYearTV)
     }
 
+
+    /**
+     * Sets the month view with the days of the month.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setMonthView() {
         monthYearText.text = monthYearFromDate(selectedDate)
@@ -72,6 +87,11 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         calendarRecyclerView.adapter = calendarAdapter
     }
 
+    /**
+     * Returns an array list of days in the given month.
+     * @param date The date to get the days of the month for.
+     * @return An array list of days in the given month.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun daysInMonthArray(date: LocalDate): ArrayList<String> {
         val daysInMonthArray = ArrayList<String>()
@@ -92,31 +112,46 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         return daysInMonthArray
     }
 
+    /**
+     * Returns the month and year from the given date.
+     * @param date The date to get the month and year from.
+     * @return The month and year from the given date.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun monthYearFromDate(date: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
         return date.format(formatter)
     }
 
+    /**
+     * Changes the selected date to the previous month and updates the month view.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     fun previousMonthAction(view: View) {
         selectedDate = selectedDate.minusMonths(1)
         setMonthView()
     }
 
+    /**
+     * Changes the selected date to the next month and updates the month view.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     fun nextMonthAction(view: View) {
         selectedDate = selectedDate.plusMonths(1)
         setMonthView()
     }
 
+    /**
+     * Handles the item click event for the calendar adapter.
+     * @param position The position of the clicked item.
+     * @param dayText The text of the clicked day.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onItemClick(position: Int, dayText: String?) {
         if (!dayText.isNullOrEmpty()) {
             val selectedDateText = "Selected Date: $dayText ${monthYearFromDate(selectedDate)}"
 
             // Get the vaccinations from the database for the selected day
-            // This is a placeholder and you need to replace it with your actual database call
             val vaccinations = getVaccinationsForDate(selectedDateText)
 
             if (vaccinations.isNotEmpty()) {
@@ -149,8 +184,12 @@ class VaccinationCalendarActivity : AppCompatActivity(), CalendarAdapter.OnItemL
         }
     }
 
-    // TODO: Placeholder method to get vaccinations from the database
-// Replace this with your actual database call
+
+    /**
+     * Retrieves the vaccinations for the given date.
+     * @param date The date to retrieve the vaccinations for.
+     * @return A list of vaccinations for the given date.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
         // TODO: Implement the database call to get the vaccinations for the given date

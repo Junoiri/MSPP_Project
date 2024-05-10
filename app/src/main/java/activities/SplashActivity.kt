@@ -9,7 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mspp_project.R
 import com.bumptech.glide.Glide
 
+/**
+ * This activity is responsible for displaying the splash screen of the application.
+ */
 class SplashActivity : AppCompatActivity() {
+
+    /**
+     * Initializes the activity view and sets up the splash screen animation.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -21,6 +28,6 @@ class SplashActivity : AppCompatActivity() {
             val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_up, R.anim.slide_out_up_splash)
-        }, 3000) // delay of 5 seconds
+        }, 3000)
     }
 }

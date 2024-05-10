@@ -26,6 +26,9 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+/**
+ * This fragment is responsible for managing the upcoming vaccination schedule.
+ */
 class UpcomingVaccinationFragment : Fragment() {
     private var userEmail = Firebase.auth.currentUser?.email.toString()
     private lateinit var dateScheduleButton: Button
@@ -36,6 +39,7 @@ class UpcomingVaccinationFragment : Fragment() {
     private lateinit var dosesTakenNumberPicker: NumberPicker
     private var selectedDate: Date? = null
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,6 +48,9 @@ class UpcomingVaccinationFragment : Fragment() {
         return inflater.inflate(R.layout.add_schedule_layout, container, false)
     }
 
+    /**
+     * Initializes the fragment view, sets up the date picker and save button.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViews(view)
@@ -60,6 +67,9 @@ class UpcomingVaccinationFragment : Fragment() {
         dosesTakenNumberPicker = view.findViewById(R.id.dose_taken_number_picker)
     }
 
+    /**
+     * Sets up the date picker dialog for scheduling the vaccination.
+     */
     private fun setupDatePicker() {
         dateScheduleButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -80,6 +90,9 @@ class UpcomingVaccinationFragment : Fragment() {
         }
     }
 
+    /**
+     * Sets up the save button to save the vaccination schedule.
+     */
     private fun setupSaveButton() {
         saveButton.setOnClickListener {
             val vaccineNameText = vaccineName.text.toString()
@@ -87,22 +100,32 @@ class UpcomingVaccinationFragment : Fragment() {
             val scheduleDateText = dateScheduleButton.text.toString()
 
             if (vaccineNameText.isEmpty()) {
-                Toast.makeText(requireContext(), "Vaccine name cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Vaccine name cannot be empty", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
             if (manufacturerText.isEmpty()) {
-                Toast.makeText(requireContext(), "Manufacturer cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Manufacturer cannot be empty", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
             if (scheduleDateText == "Date schedule") {
-                Toast.makeText(requireContext(), "Please select a schedule date", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Please select a schedule date",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
             if (totalDosesNumberPicker.value == 0 || dosesTakenNumberPicker.value == 0) {
-                Toast.makeText(requireContext(), "Please select the number of doses", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Please select the number of doses",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -123,22 +146,46 @@ class UpcomingVaccinationFragment : Fragment() {
                         val userId = getId(userEmail)
                         userId?.let {
                             scheduledVaccination.user_id = it
-                            ScheduledVaccinationSF.insertSchedule(scheduledVaccination, requireContext())
-                            Toast.makeText(requireContext(), "Vaccination schedule saved!", Toast.LENGTH_SHORT).show()
+                            ScheduledVaccinationSF.insertSchedule(
+                                scheduledVaccination,
+                                requireContext()
+                            )
+                            Toast.makeText(
+                                requireContext(),
+                                "Vaccination schedule saved!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } ?: run {
-                            Toast.makeText(requireContext(), "Failed to retrieve user ID", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Failed to retrieve user ID",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(requireContext(), "Failed to save vaccination schedule", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to save vaccination schedule",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         e.printStackTrace()
                     }
                 }
             } ?: run {
-                Toast.makeText(requireContext(), "Please select a schedule date", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Please select a schedule date",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
+    /**
+     * Retrieves the user ID for the given email.
+     * @param email The email to retrieve the user ID for.
+     * @return The user ID, or null if not found.
+     */
     private suspend fun getId(email: String): Int? {
         return withContext(Dispatchers.IO) {
             UserSF.getId(email)

@@ -18,6 +18,12 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
+/**
+ * This class is responsible for managing Google authentication.
+ *
+ * @property activity The activity in which this manager is operating.
+ * @property clientId The client ID for the Google Sign-In.
+ */
 class GoogleAuthManager(private val activity: AppCompatActivity, private val clientId: String) {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -53,6 +59,9 @@ class GoogleAuthManager(private val activity: AppCompatActivity, private val cli
             }
         }
 
+    /**
+     * Initializes the FirebaseAuth instance, GoogleSignInClient, and sets up the activity result launcher.
+     */
     init {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(clientId)
@@ -62,6 +71,9 @@ class GoogleAuthManager(private val activity: AppCompatActivity, private val cli
         auth = FirebaseAuth.getInstance()
     }
 
+    /**
+     * Initiates the sign in process with Google.
+     */
     fun signIn() {
         val intent = googleSignInClient.signInIntent
         activityResultLauncher.launch(intent)

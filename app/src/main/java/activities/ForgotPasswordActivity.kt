@@ -13,8 +13,11 @@ import com.example.mspp_project.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 
+/**
+ * This activity is responsible for the password recovery process.
+ * It provides functionality to send a password reset email to the user's registered email address.
+ */
 class ForgotPasswordActivity : AppCompatActivity() {
-    // Declare UI components and FirebaseAuth
     private lateinit var buttonClose: ImageButton
     private lateinit var textViewForgotPasswordHeader: TextView
     private lateinit var editTextEmail: EditText
@@ -22,15 +25,20 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private var isResumed = false
 
-
+    /**
+     * Initializes the activity view, UI components, Firebase Authentication and sets up event listeners.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password)
         initializeViews() // Initialize UI components
         initializeFirebase() // Initialize Firebase Authentication
-        setEventListeners() // Set up event listeners
+        setEventListeners()
     }
 
+    /**
+     * Initializes the UI components.
+     */
     private fun initializeViews() {
         buttonClose = findViewById(R.id.buttonClose)
         textViewForgotPasswordHeader = findViewById(R.id.textViewForgotPasswordHeader)
@@ -38,10 +46,16 @@ class ForgotPasswordActivity : AppCompatActivity() {
         buttonRecoverPassword = findViewById(R.id.buttonRecoverPassword)
     }
 
+    /**
+     * Initializes Firebase Authentication.
+     */
     private fun initializeFirebase() {
         mAuth = FirebaseAuth.getInstance() // Initialize Firebase
     }
 
+    /**
+     * Sets up event listeners for the close button and recover password button.
+     */
     private fun setEventListeners() {
         buttonClose.setOnClickListener {
             finish() // Close the activity when clicking the close button
@@ -52,6 +66,9 @@ class ForgotPasswordActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Triggers the password recovery process by sending a password reset email to the user's registered email address.
+     */
     private fun recoverPassword() {
         val email = editTextEmail.text.toString().trim()
         if (TextUtils.isEmpty(email)) {
@@ -80,17 +97,26 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 ).show() // Notify the user of failure
             }
     }
+
+    /**
+     * Sets a flag to true when the activity is paused.
+     */
     override fun onPause() {
         super.onPause()
-        // Set the flag to true when the activity is paused
         isResumed = true
     }
 
+    /**
+     * Overrides the back button press to navigate to the previous activity with a slide transition.
+     */
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
+    /**
+     * If the activity is being resumed, navigates to the LoginActivity with a slide transition.
+     */
     override fun onResume() {
         super.onResume()
         // If the activity is being resumed, navigate to the LoginActivity

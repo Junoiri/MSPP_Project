@@ -12,8 +12,11 @@ import androidx.core.content.ContextCompat
 import android.util.Log
 import com.example.mspp_project.R
 
-
-//TODO: make it work based on date of vaccination - reminders
+/**
+ * This class is responsible for managing notifications.
+ *
+ * @property context The context in which this manager is operating.
+ */
 class NotificationHelper(private val context: Context) {
 
     companion object {
@@ -21,10 +24,16 @@ class NotificationHelper(private val context: Context) {
         private const val NOTIFICATION_ID = 1
     }
 
+    /**
+     * Initializes the notification channel.
+     */
     init {
         createNotificationChannel()
     }
 
+    /**
+     * Creates a notification channel if the Android version is Oreo or above.
+     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Example Channel"
@@ -39,6 +48,9 @@ class NotificationHelper(private val context: Context) {
         }
     }
 
+    /**
+     * Sends a notification if notifications are enabled in the shared preferences.
+     */
     fun sendNotification() {
         val sharedPref = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val notificationsEnabled = sharedPref.getBoolean("notifications_enabled", true)
@@ -63,7 +75,10 @@ class NotificationHelper(private val context: Context) {
                 notify(NOTIFICATION_ID, builder.build())
             }
         } else {
-            Log.e("activities.notifications.NotificationHelper", "ACCESS_NOTIFICATION_POLICY permission not granted")
+            Log.e(
+                "activities.notifications.NotificationHelper",
+                "ACCESS_NOTIFICATION_POLICY permission not granted"
+            )
         }
     }
 }

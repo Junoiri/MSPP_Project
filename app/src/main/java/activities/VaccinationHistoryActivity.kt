@@ -23,11 +23,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * This activity is responsible for managing the vaccination history.
+ */
 class VaccinationHistoryActivity : AppCompatActivity() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private lateinit var userEmail: String
 
+    /**
+     * Initializes the activity view, sets up the toolbar, and loads the vaccination records.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,6 +53,9 @@ class VaccinationHistoryActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the toolbar with a back button and title.
+     */
     private fun setupToolbar() {
         val toolbarTitle: TextView = findViewById(R.id.toolbar_title)
         val backButton: ImageView = findViewById(R.id.back_button)
@@ -58,6 +67,9 @@ class VaccinationHistoryActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Loads the vaccination records for the current user.
+     */
     private suspend fun loadVaccinationRecords(userId: Int) {
         val recordsContainer: LinearLayout = findViewById(R.id.entries_container)
         recordsContainer.removeAllViews() // Clear previous records
@@ -76,6 +88,9 @@ class VaccinationHistoryActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Adds a vaccination record to the container view.
+     */
     private suspend fun addRecordToContainer(record: VaccinationRecord, container: LinearLayout) {
         val recordView: View = LayoutInflater.from(this)
             .inflate(R.layout.vaccination_entry, container, false)
@@ -111,12 +126,22 @@ class VaccinationHistoryActivity : AppCompatActivity() {
         container.addView(recordView, 0)
     }
 
+    /**
+     * Retrieves the user ID for the given email.
+     * @param email The email to retrieve the user ID for.
+     * @return The user ID, or null if not found.
+     */
     private suspend fun getId(email: String): Int? {
         return withContext(Dispatchers.IO) {
             UserSF.getId(email)
         }
     }
 
+    /**
+     * Retrieves all vaccination records for the given user ID.
+     * @param userId The user ID to retrieve the vaccination records for.
+     * @return A set of vaccination records for the given user ID.
+     */
     private suspend fun getAllRecords(userId: Int): Set<VaccinationRecord?>? {
         return VaccinationRecordSF.getAllRecords(userId)
     }

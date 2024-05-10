@@ -20,9 +20,13 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
+/**
+ * This activity is responsible for user authentication.
+ * It provides functionalities: login with email and password, login with Google, login with Facebook, and navigation to register and forgot password activities.
+ */
 class LoginActivity : AppCompatActivity() {
 
-    private var userEmail= Firebase.auth.currentUser?.email.toString()
+    private var userEmail = Firebase.auth.currentUser?.email.toString()
 
     private lateinit var auth: FirebaseAuth
     private lateinit var emailAuthManager: EmailAuthManager
@@ -39,7 +43,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleAuthManager: GoogleAuthManager
 
 
-
+    /**
+     * Initializes the activity view, UI components, Firebase Authentication and sets up event listeners.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -69,6 +75,9 @@ class LoginActivity : AppCompatActivity() {
         forgotPasswordTextView.setOnClickListener { navigateToForgotPasswordActivity() }
     }
 
+    /**
+     * Triggers the login process with email and password.
+     */
     private fun loginWithEmail() {
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
@@ -95,12 +104,18 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Navigates to the RegisterActivity.
+     */
     private fun navigateToRegisterActivity() {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_right, R.anim.slide_left)
     }
 
+    /**
+     * Navigates to the MainActivity.
+     */
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
@@ -109,6 +124,9 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Navigates to the ForgotPasswordActivity.
+     */
     private fun navigateToForgotPasswordActivity() {
         //NOTE: Here, we can add '2' at the end to use the dynamic linking approach.
         val intent = Intent(this, ForgotPasswordActivity::class.java)
@@ -116,35 +134,47 @@ class LoginActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_right, R.anim.slide_left)
     }
 
+    /**
+     * Displays a toast message.
+     */
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Configures the visibility toggle for the password field.
+     */
     private fun configurePasswordVisibilityToggle(
-    passwordEditText: EditText,
-    toggleButton: ImageView
-) {
-    var isPasswordVisible = false
+        passwordEditText: EditText,
+        toggleButton: ImageView
+    ) {
+        var isPasswordVisible = false
 
-    toggleButton.setOnClickListener {
-        isPasswordVisible = !isPasswordVisible
-        passwordEditText.transformationMethod = if (isPasswordVisible) {
-            toggleButton.setImageResource(R.drawable.ic_visibility_on)
-            HideReturnsTransformationMethod.getInstance()
-        } else {
-            toggleButton.setImageResource(R.drawable.ic_visibility_off)
-            PasswordTransformationMethod.getInstance()
+        toggleButton.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            passwordEditText.transformationMethod = if (isPasswordVisible) {
+                toggleButton.setImageResource(R.drawable.ic_visibility_on)
+                HideReturnsTransformationMethod.getInstance()
+            } else {
+                toggleButton.setImageResource(R.drawable.ic_visibility_off)
+                PasswordTransformationMethod.getInstance()
+            }
+            passwordEditText.setSelection(passwordEditText.text.length)
         }
-        passwordEditText.setSelection(passwordEditText.text.length)
     }
-}
 
+    /**
+     * Initializes the authentication managers for Google and Facebook.
+     */
     private fun initializeAuthManagers() {
         val clientId = getString(R.string.client_id)
         facebookAuthManager = FacebookAuthManager(this)
         googleAuthManager = GoogleAuthManager(this, clientId)
     }
 
+    /**
+     * Sets up the sign-in buttons for Google and Facebook.
+     */
     private fun setupSignInButtons() {
         val googleSignInButton: ImageView = findViewById(R.id.google_sign_in_button)
         googleSignInButton.setOnClickListener {
@@ -165,15 +195,25 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handles the result from the authentication process.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         handleActivityResult(requestCode, resultCode, data)
     }
+
+    /**
+     * Overrides the back button press to navigate to the previous activity with a slide transition.
+     */
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
+    /**
+     * Handles the result from the Facebook authentication process.
+     */
     private fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         facebookAuthManager.onActivityResult(requestCode, resultCode, data)
     }
