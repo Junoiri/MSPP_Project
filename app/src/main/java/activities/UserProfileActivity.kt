@@ -9,11 +9,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mspp_project.R
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import db.DConnection
+import com.google.firebase.auth.FirebaseAuth
 import db.user.User
-import db.user.UserQueries
 import db.user.UserSF
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +24,7 @@ import java.util.regex.Pattern
 
 class UserProfileActivity : AppCompatActivity() {
 
-    private var userEmail = Firebase.auth.currentUser?.email.toString()
+    private var userEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
     private lateinit var nameEditText: EditText
     private lateinit var surnameEditText: EditText
     private lateinit var emailEditText: EditText
@@ -86,7 +83,6 @@ class UserProfileActivity : AppCompatActivity() {
 
         // Validate input
         if (validateInput(email, name, surname, dob, idNumber)) {
-            // TODO: Save to the db
             Toast.makeText(this, "Changes saved successfully", Toast.LENGTH_SHORT).show()
         }
     }
@@ -138,11 +134,17 @@ class UserProfileActivity : AppCompatActivity() {
             null
         }
 
-        withContext(Dispatchers.IO) {
-            val success = UserSF.updateUser(userId, User(null, name, surname, email, dob, null), this@UserProfileActivity)
-            if (success) {
-                showToast("User updated successfully")
-            } else {
+        coroutineScope.launch {
+            try {
+                val userId = getId(userEmail) ?: return@launch
+                val success = UserSF.updateUser(userId, User(null, name, surname, email, dob, null), this@UserProfileActivity)
+                if (success) {
+                    showToast("User updated successfully")
+                } else {
+                    showToast("Failed to update user")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
                 showToast("Failed to update user")
             }
         }
@@ -163,13 +165,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getId(email: String): Int {
+    private suspend fun getId(email: String): Int? {
         return withContext(Dispatchers.IO) {
-            val connection = DConnection.getConnection()
-            connection.use { connection ->
-                val userQueries = UserQueries(connection)
-                userQueries.getId(email)
-            }
+            UserSF.getId(email)
         }
     }
 
