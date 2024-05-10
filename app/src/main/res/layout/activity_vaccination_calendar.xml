@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="activities.VaccinationCalendarActivity">
+    tools:context="activities.VaccinationCalendarActivity"
+    android:background="@drawable/background_calendar">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +22,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="70dp">
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -31,7 +34,7 @@
                 android:background="@null"
                 android:textStyle="bold"
                 android:onClick="previousMonthAction"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/monthYearTV"
@@ -52,7 +55,7 @@
                 android:background="@null"
                 android:textStyle="bold"
                 android:onClick="nextMonthAction"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -65,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="SUN"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
 
@@ -74,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="MON"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
 
@@ -83,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TUE"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
 
@@ -92,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="WED"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
 
@@ -101,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="THUR"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
 
@@ -110,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="FRI"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
 
@@ -119,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="SAT"
-                android:textColor="@android:color/holo_purple"
+                android:textColor="@color/red"
                 android:textAlignment="center"
                 android:textSize="16sp"/>
         </LinearLayout>

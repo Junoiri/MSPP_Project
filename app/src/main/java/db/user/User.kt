@@ -1,4 +1,7 @@
 package db.user
+/**
+ * Represents a user entry in the database.
+ */
 
 data class User(
     val user_id: Int? = null,

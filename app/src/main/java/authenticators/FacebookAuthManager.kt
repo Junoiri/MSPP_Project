@@ -15,11 +15,18 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 
-
+/**
+ * This class is responsible for managing Facebook authentication.
+ *
+ * @property activity The activity in which this manager is operating.
+ */
 class FacebookAuthManager(private val activity: AppCompatActivity) {
     private lateinit var auth: FirebaseAuth
     private lateinit var callbackManager: CallbackManager
 
+    /**
+     * Initializes the FirebaseAuth instance, CallbackManager, and registers a callback for the LoginManager.
+     */
     init {
         auth = FirebaseAuth.getInstance()
         callbackManager = CallbackManager.Factory.create()
@@ -41,11 +48,19 @@ class FacebookAuthManager(private val activity: AppCompatActivity) {
             })
     }
 
+    /**
+     * Initiates the sign in process with Facebook.
+     */
     fun signIn() {
         LoginManager.getInstance()
             .logInWithReadPermissions(activity, listOf("email", "public_profile"))
     }
 
+    /**
+     * Handles the Facebook access token.
+     *
+     * @param token The Facebook access token.
+     */
     private fun handleFacebookAccessToken(token: String) {
         val credential: AuthCredential = FacebookAuthProvider.getCredential(token)
         auth.signInWithCredential(credential)
@@ -67,6 +82,13 @@ class FacebookAuthManager(private val activity: AppCompatActivity) {
             }
     }
 
+    /**
+     * Handles the result from the Facebook sign in activity.
+     *
+     * @param requestCode The request code originally supplied to startActivityForResult().
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller.
+     */
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }

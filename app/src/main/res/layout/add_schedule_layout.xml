@@ -17,11 +17,16 @@
 
     <EditText
         android:id="@+id/vaccine_name"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/defaultBlack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Vaccine Name" />
 
     <Button
+        style="@style/BlueButton"
+        android:background="@drawable/button_shape_g"
+        android:textColor="@color/defaultBlack"
         android:id="@+id/date_schedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +34,8 @@
 
     <EditText
         android:id="@+id/manufacturer"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/defaultBlack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Manufacturer" />
@@ -36,6 +43,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/defaultBlack"
         android:layout_marginBottom="8dp"
         android:padding="6dp"
         android:text="Total doses number"
@@ -56,6 +64,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColorHint="@color/gray"
         android:layout_marginBottom="8dp"
         android:padding="6dp"
         android:text="Doses already taken"

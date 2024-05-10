@@ -13,11 +13,17 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.mspp_project.R
 import android.content.SharedPreferences
 
+/**
+ * This activity is responsible for managing the settings of the application.
+ */
 class SettingsActivity : AppCompatActivity() {
     private lateinit var notificationSwitch: SwitchCompat
     private lateinit var switch2: SwitchCompat
     private lateinit var switch3: SwitchCompat
 
+    /**
+     * Initializes the activity view, sets up the toolbar, switches, and window insets.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -28,6 +34,9 @@ class SettingsActivity : AppCompatActivity() {
         setupWindowInsets()
     }
 
+    /**
+     * Sets up the toolbar with a back button and title.
+     */
     private fun setupToolbar() {
         val toolbar = findViewById<LinearLayout>(R.id.toolbar)
 
@@ -35,12 +44,17 @@ class SettingsActivity : AppCompatActivity() {
         val backButton: ImageView = toolbar.findViewById(R.id.back_button)
         backButton.setOnClickListener {
             finish() // Finish the SettingsActivity and go back
+            overridePendingTransition(R.anim.stay, R.anim.pop_out)
         }
 
         val titleTextView: TextView = toolbar.findViewById(R.id.toolbar_title)
         titleTextView.text = "Settings"
     }
 
+    /**
+     * Sets up the switches for various settings.
+     * It loads the saved state of the switches and sets up listeners to save their state when changed.
+     */
     private fun setupSwitches() {
         // Find the switches
         notificationSwitch = findViewById(R.id.notification_switch)
@@ -59,6 +73,11 @@ class SettingsActivity : AppCompatActivity() {
         setupSwitch3(sharedPref)
     }
 
+    /**
+     * Sets up the notification switch.
+     * It saves its state when changed and shows a toast message indicating whether notifications are enabled or disabled.
+     * @param sharedPref The shared preferences to save the state of the switch.
+     */
     private fun setupNotificationSwitch(sharedPref: SharedPreferences) {
         notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
             with(sharedPref.edit()) {
@@ -73,6 +92,11 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the second switch.
+     * It saves its state when changed.
+     * @param sharedPref The shared preferences to save the state of the switch.
+     */
     private fun setupSwitch2(sharedPref: SharedPreferences) {
         switch2.setOnCheckedChangeListener { _, isChecked ->
             with(sharedPref.edit()) {
@@ -81,6 +105,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun setupSwitch3(sharedPref: SharedPreferences) {
         switch3.setOnCheckedChangeListener { _, isChecked ->
@@ -91,6 +116,9 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the window insets for the activity.
+     */
     private fun setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

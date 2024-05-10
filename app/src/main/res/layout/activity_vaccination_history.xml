@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="activities.VaccinationHistoryActivity">
+    tools:context="activities.VaccinationHistoryActivity"
+    android:background="@drawable/background_history">
 
     <include
         android:id="@+id/custom_toolbar"
@@ -14,6 +15,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="110dp"
         android:layout_below="@id/custom_toolbar">
 
         <LinearLayout

@@ -33,6 +33,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.regex.Pattern
 
+/**
+ * This activity is responsible for user registration.
+ * It provides functionalities: register with email and password, register with Google, register with Facebook, and navigation to login activity.
+ */
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var emailEditText: EditText
@@ -52,6 +56,9 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var googleAuthManager: GoogleAuthManager
     private lateinit var facebookAuthManager: FacebookAuthManager
 
+    /**
+     * Initializes the activity view, UI components, Firebase Authentication and sets up event listeners.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -79,7 +86,6 @@ class RegisterActivity : AppCompatActivity() {
         nameEditText = findViewById(R.id.name_edit_text)
         surnameEditText = findViewById(R.id.surname_edit_text)
         dobEditText = findViewById(R.id.dob_edit_text)
-        idNumberEditText = findViewById(R.id.id_number_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
         registerButton = findViewById(R.id.register_button)
         passwordVisibilityToggle = findViewById(R.id.password_visibility_toggle)
@@ -94,6 +100,9 @@ class RegisterActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Configures the visibility toggle for the password field.
+     */
     private fun configurePasswordVisibilityToggle() {
         passwordVisibilityToggle.setOnClickListener { togglePasswordVisibility() }
     }
@@ -108,7 +117,7 @@ class RegisterActivity : AppCompatActivity() {
         }
         passwordEditText.setSelection(passwordEditText.text.length)
     }
-    //Calling firstly insert password suspend function then insert user
+
     private fun setRegisterButtonListener() {
         registerButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
@@ -123,6 +132,10 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the Google sign-in button listener.
+     * When the button is clicked, it makes the progress bar visible and triggers the Google sign-in process.
+     */
     private fun setupGoogleSignInButtonListener() {
         val signInButton: ImageView = findViewById(R.id.imageView_option1)
         signInButton.setOnClickListener {
@@ -131,6 +144,10 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the Facebook sign-in button listener.
+     * When the button is clicked, it makes the progress bar visible and triggers the Facebook sign-in process.
+     */
     private fun setupFacebookSignInButtonListener() {
         val signInButton: ImageView = findViewById(R.id.imageView_option2)
         signInButton.setOnClickListener {
@@ -139,10 +156,20 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handles the result from the Facebook sign-in process.
+     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
     private fun handleFacebookSignInResult(requestCode: Int, resultCode: Int, data: Intent?) {
         facebookAuthManager.onActivityResult(requestCode, resultCode, data)
     }
 
+    /**
+     * Sets up text watchers for the password edit text.
+     * It checks the password requirements every time the text in the password edit text changes.
+     */
     private fun setupTextWatchers() {
         passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -155,32 +182,49 @@ class RegisterActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Checks if the given password meets the requirements.
+     * The requirements are: at least 8 characters long, contains an uppercase letter, contains a digit, and contains a special character.
+     * @param password The password to check.
+     */
     private fun checkPasswordRequirements(password: String) {
         val specialCharacters = "!@#\$%^&*()_+-=<>?/\\|{}[]:;\"'"
 
         icons[0].setImageResource(
-            if (password.length >= 8) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.length >= 8) R.drawable.ic_check_g else R.drawable.ic_close
         )
         icons[1].setImageResource(
-            if (password.any { it.isUpperCase() }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.any { it.isUpperCase() }) R.drawable.ic_check_g else R.drawable.ic_close
         )
         icons[2].setImageResource(
-            if (password.any { it.isDigit() }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.any { it.isDigit() }) R.drawable.ic_check_g else R.drawable.ic_close
         )
         icons[3].setImageResource(
-            if (password.any { it in specialCharacters }) R.drawable.ic_check_black else R.drawable.ic_cross_black
+            if (password.any { it in specialCharacters }) R.drawable.ic_check_g else R.drawable.ic_close
         )
     }
 
+    /**
+     * Sets up the login text view listener.
+     * When the text view is clicked, it navigates to the login activity.
+     */
     private fun setupLoginListener() {
         val loginTextView = findViewById<TextView>(R.id.textView_login)
         loginTextView.setOnClickListener { navigateToLoginActivity() }
     }
 
+    /**
+     * Sets up the date picker for the date of birth edit text.
+     * When the edit text is clicked, it shows the date picker dialog.
+     */
     private fun setupDatePicker() {
         dobEditText.setOnClickListener { showDatePicker() }
     }
 
+    /**
+     * Shows the date picker dialog.
+     * The user can select a date, and the selected date will be set to the date of birth edit text.
+     */
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -207,15 +251,17 @@ class RegisterActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
+    /**
+     * Triggers the registration process with email and password.
+     */
     private fun registerUser() {
         val email = emailEditText.text.toString().trim()
         val name = nameEditText.text.toString().trim()
         val surname = surnameEditText.text.toString().trim()
         val dob = dobEditText.text.toString().trim()
-        val idNumber = idNumberEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
 
-        if (validateInput(email, name, surname, dob, idNumber, password)) {
+        if (validateInput(email, name, surname, dob, password)) {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -226,7 +272,6 @@ class RegisterActivity : AppCompatActivity() {
                             "name" to name,
                             "surname" to surname,
                             "dob" to dob,
-                            "idNumber" to idNumber
                         )
                         saveUserToFirestore(userData)
                     } else {
@@ -236,6 +281,9 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Saves user to Firestore.
+     */
     private fun saveUserToFirestore(userData: HashMap<String, String>) {
         db.collection("Users").document(userData["userId"].toString())
             .set(userData)
@@ -248,18 +296,24 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
+    /**
+     * Navigates to the LoginActivity.
+     */
     private fun navigateToLoginActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
+        overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left)
     }
 
+    /**
+     * Performs input validation for given fields
+     */
     private fun validateInput(
         email: String,
         name: String,
         surname: String,
         dob: String,
-        idNumber: String,
         password: String
     ): Boolean {
         return when {
@@ -307,6 +361,10 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inserts the password into the database.
+     * @return The ID of the inserted password.
+     */
     private suspend fun insertPassword(): Int {
         val password: String = passwordEditText.text.toString().trim()
 
@@ -317,6 +375,9 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inserts the user into the database.
+     */
     private suspend fun insertUser() {
         val name: String = nameEditText.text.toString().trim()
         val surname: String = surnameEditText.text.toString().trim()
@@ -325,12 +386,18 @@ class RegisterActivity : AppCompatActivity() {
 
         val selectedDate: Date? = parseDate(selectedDateString)
 
-        val user = User(null,name, surname, email, selectedDate?.let { toSqlDate(it) }, passId)
+        val user = User(null, name, surname, email, selectedDate?.let { toSqlDate(it) }, passId)
 
         withContext(Dispatchers.IO) {
             UserSF.insertUser(user, this@RegisterActivity)
         }
     }
+
+    /**
+     * Parses the given date string into a Date object.
+     * @param dateString The date string to parse.
+     * @return The parsed Date object, or null if the date string is invalid.
+     */
     private fun parseDate(dateString: String): Date? {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return try {
@@ -340,11 +407,22 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Converts the given util Date to a SQL Date.
+     * @param utilDate The util Date to convert.
+     * @return The converted SQL Date.
+     */
     private fun toSqlDate(utilDate: Date): java.sql.Date {
         return java.sql.Date(utilDate.time)
     }
 
 
+    /**
+     * Checks if the given password is valid.
+     * A valid password is at least 8 characters long, contains an uppercase letter, contains a digit, and contains a special character.
+     * @param password The password to check.
+     * @return True if the password is valid, false otherwise.
+     */
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 8 &&
                 password.any { it.isUpperCase() } &&
@@ -352,10 +430,24 @@ class RegisterActivity : AppCompatActivity() {
                 password.any { "!@#\$%^&*()_+-=<>?/\\|{}[]:;\"'".contains(it) }
     }
 
+    /**
+     * Displays a toast message.
+     */
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Overrides the back button press to navigate to the previous activity with a slide transition.
+     */
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    /**
+     * Handles the result from the authentication process.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

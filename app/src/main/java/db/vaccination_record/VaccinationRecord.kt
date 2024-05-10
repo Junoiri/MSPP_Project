@@ -1,4 +1,7 @@
 package db.vaccination_record
+/**
+ * Represents a vaccination record entry in the database.
+ */
 
 data class VaccinationRecord(
     val record_id: Int?=null,
@@ -7,5 +10,5 @@ data class VaccinationRecord(
     val next_dose_due_date: java.sql.Date?=null,
     val manufacturer: String?=null,
     val dose: String?=null,
-    val user_id: Int? = null,
+    var user_id: Int? = null,
 )

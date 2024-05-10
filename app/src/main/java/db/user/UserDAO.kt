@@ -1,5 +1,7 @@
 package db.user
-
+/**
+ * Interface for accessing and managing PHP user related procedures in the database.
+ */
 interface UserDAO {
     fun getUser(user_id: Int): User?
     fun getAllUsers(): Set<User?>?

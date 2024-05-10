@@ -6,78 +6,94 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/save_vaccination">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_height="500dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/vaccine_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Vaccine Name" />
+            <EditText
+                android:id="@+id/vaccine_name"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/defaultBlack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Vaccine Name" />
 
-    <Button
-        android:id="@+id/date_administrated"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Date Administered" />
+            <Button
+                style="@style/BlueButton"
+                android:background="@drawable/button_shape_g"
+                android:textColor="@color/defaultBlack"
+                android:id="@+id/date_administrated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Date Administered" />
 
-    <Button
-        android:id="@+id/next_dose_due_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Next Dose Due Date" />
+            <Button
+                style="@style/BlueButton"
+                android:background="@drawable/button_shape_g"
+                android:textColor="@color/defaultBlack"
+                android:id="@+id/next_dose_due_date"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Next Dose Due Date" />
 
-    <EditText
-        android:id="@+id/manufacturer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Manufacturer" />
+            <EditText
+                android:id="@+id/manufacturer"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/defaultBlack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Manufacturer" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:padding="6dp"
-        android:text="Total doses number"
-        android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="6dp"
+                android:text="Total doses number"
+                android:textColor="@color/defaultBlack"
+                android:textSize="18sp" />
 
-    <com.shawnlin.numberpicker.NumberPicker
-        android:id="@+id/dose_total_number_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:np_height="64dp"
-        app:np_max="9"
-        app:np_min="1"
-        app:np_orientation="horizontal"
-        app:np_value="1"
-        app:np_width="180dp" />
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/dose_total_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:np_height="64dp"
+                app:np_max="9"
+                app:np_min="1"
+                app:np_orientation="horizontal"
+                app:np_value="1"
+                app:np_width="180dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:padding="6dp"
-        android:text="Doses already taken"
-        android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="6dp"
+                android:text="Doses already taken"
+                android:textColor="@color/defaultBlack"
+                android:textSize="18sp" />
 
-    <com.shawnlin.numberpicker.NumberPicker
-        android:id="@+id/dose_taken_number_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:np_height="64dp"
-        app:np_max="9"
-        app:np_min="1"
-        app:np_orientation="horizontal"
-        app:np_value="1"
-        app:np_width="180dp" />
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/dose_taken_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="50dp"
+                app:np_height="64dp"
+                app:np_max="9"
+                app:np_min="1"
+                app:np_orientation="horizontal"
+                app:np_value="1"
+                app:np_width="180dp" />
 
         </LinearLayout>
     </ScrollView>
@@ -86,8 +102,8 @@
         android:id="@+id/save_vaccination"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_check_black"
         app:fabSize="normal" />
