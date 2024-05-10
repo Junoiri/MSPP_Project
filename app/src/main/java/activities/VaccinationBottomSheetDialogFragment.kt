@@ -11,6 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mspp_project.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import db.scheduled_vaccination.ScheduledVaccination
+import db.vaccination_record.VaccinationRecord
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Date
 
 /**
  * This fragment is responsible for managing the bottom sheet dialog for vaccinations.
@@ -18,6 +24,7 @@ import db.scheduled_vaccination.ScheduledVaccination
 class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private lateinit var dialogRecyclerView: RecyclerView
     private lateinit var dialogTitle: TextView
+    private var userEmail: String = "" // Initialize with an empty string
 
     /**
      * Initializes the fragment view, sets up the dialog title and recycler view.
@@ -62,21 +69,53 @@ class VaccinationBottomSheetDialogFragment : BottomSheetDialogFragment() {
         dialogTitle.text = selectedDateText
 
         // Get the vaccinations from the database for the selected day
-        // This is a placeholder and you need to replace it with your actual database call
-        val vaccinations = getVaccinationsForDate(selectedDateText)
+        CoroutineScope(Dispatchers.Main).launch {
+            val user_id = getId(userEmail) ?: return@launch
+            val scheduledVaccinations = getScheduledVaccinationsByDate(user_id, parseDate(selectedDateText))
+            val vaccinationRecords = getVaccinationRecordsByDate(user_id, parseDate(selectedDateText))
 
-        val adapter = VaccinationAdapter(vaccinations)
-        dialogRecyclerView.adapter = adapter
+            val vaccinations = scheduledVaccinations?.toMutableList() ?: mutableListOf()
+            vaccinationRecords?.forEach { record ->
+                vaccinations.add(record)
+            }
+
+            
+            val adapter = VaccinationAdapter(vaccinations.toList() as List<ScheduledVaccination>)
+            dialogRecyclerView.adapter = adapter
+        }
     }
 
-    /**
-     * Retrieves the vaccinations for the given date.
-     * @param date The date to retrieve the vaccinations for.
-     * @return A list of vaccinations for the given date.
-     */
-    private fun getVaccinationsForDate(date: String?): List<ScheduledVaccination> {
-        // TODO: Implement the database call to get the vaccinations for the given date
-        //procedure, queries, sf, implementation
-        return emptyList()
+    // TODO: Placeholder method to get user ID
+    private suspend fun getId(email: String): Int? {
+        return withContext(Dispatchers.IO) {
+            // Implement your logic here
+            null
+        }
     }
+
+    // TODO: Placeholder method to get scheduled vaccinations by date
+    private suspend fun getScheduledVaccinationsByDate(user_id: Int, date: Date?): Set<ScheduledVaccination?>? {
+        return withContext(Dispatchers.IO) {
+            // Implement your logic here
+            null
+        }
+    }
+
+    // TODO: Placeholder method to get vaccination records by date
+    private suspend fun getVaccinationRecordsByDate(user_id: Int, date: Date?): Set<VaccinationRecord?>? {
+        return withContext(Dispatchers.IO) {
+            // Implement your logic here
+            null
+        }
+    }
+
+    // TODO: Placeholder method to parse date string to Date object
+    private fun parseDate(date: String?): Date? {
+        // Implement your logic here
+        return null
+    }
+}
+
+private fun <E> MutableList<E>.add(element: VaccinationRecord?) {
+
 }
