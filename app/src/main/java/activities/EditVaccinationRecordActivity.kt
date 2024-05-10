@@ -1,21 +1,36 @@
 package activities
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mspp_project.R
-import android.util.Log
-import android.widget.EditText
-import android.widget.Toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.shawnlin.numberpicker.NumberPicker
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.shawnlin.numberpicker.NumberPicker
+import db.DConnection
+import db.user.UserSF
+import db.vaccination_record.VaccinationRecord
+import db.vaccination_record.VaccinationRecordQueries
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.Date
 
 class EditVaccinationRecordActivity : AppCompatActivity() {
+
+    private val vaccinationRecordQueries = VaccinationRecordQueries(DConnection.getConnection())
+    private val userEmail = Firebase.auth.currentUser?.email.toString()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_upcoming_vaccination)
@@ -31,11 +46,21 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
 
-        // TODO: Connect with database - display vaccination data
-        // vaccineName.setText(vaccine.name)
-        // manufacturer.setText(vaccine.manufacturer)
-        // dateAdministeredButton.text = "Date administered: ${vaccine.dateAdministered}"
-        // nextDoseDueDateButton.text = "Next dose due date: ${vaccine.nextDoseDueDate}"
+        // Connect with database - display vaccination data
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val recordId = intent.getIntExtra("record_id", -1)
+                val vaccinationRecord = getRecord(recordId)
+
+                // Display fetched data
+                vaccineName.setText(vaccinationRecord?.vaccine_name ?: "")
+                manufacturer.setText(vaccinationRecord?.manufacturer ?: "")
+                dateAdministeredButton.text = "Date administered: ${vaccinationRecord?.date_administrated}"
+                nextDoseDueDateButton.text = "Next dose due date: ${vaccinationRecord?.next_dose_due_date}"
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -55,7 +80,7 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         val dateAdministeredButton: Button = findViewById(R.id.date_administrated)
         dateAdministeredButton.setOnClickListener {
             val datePickerDialog = DatePickerDialog(this)
-            datePickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
+            datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
                 // Display the selected date on the button
                 val selectedDate = "$dayOfMonth/${month + 1}/$year"
                 dateAdministeredButton.text = "Date administered: $selectedDate"
@@ -66,7 +91,7 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         val nextDoseDueDateButton: Button = findViewById(R.id.next_dose_due_date)
         nextDoseDueDateButton.setOnClickListener {
             val datePickerDialog = DatePickerDialog(this)
-            datePickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
+            datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
                 // Display the selected date on the button
                 val selectedDate = "$dayOfMonth/${month + 1}/$year"
                 nextDoseDueDateButton.text = "Next dose due date: $selectedDate"
@@ -92,7 +117,7 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
         totalDosesNumberPicker.isAccessibilityDescriptionEnabled = true
 
         // When the value of the first number picker changes, update the maximum value of the second number picker and enable it
-        totalDosesNumberPicker.setOnValueChangedListener { picker, oldVal, newVal ->
+        totalDosesNumberPicker.setOnValueChangedListener { _, _, newVal ->
             dosesTakenNumberPicker.maxValue = newVal
             dosesTakenNumberPicker.isEnabled = true
         }
@@ -139,8 +164,61 @@ class EditVaccinationRecordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, "Vaccination saved!", Toast.LENGTH_SHORT).show()
-            finish()
+            // Prepare vaccination record object
+            CoroutineScope(Dispatchers.Main).launch {
+                val userId = getId(userEmail)
+                userId?.let {
+                    // Prepare vaccination record object
+                    val vaccinationRecord = VaccinationRecord(
+                        vaccine_name = vaccineNameText,
+                        manufacturer = manufacturerText,
+                        date_administrated = Date.valueOf(dateAdministeredText.substringAfter(":").trim()),
+                        next_dose_due_date = Date.valueOf(nextDoseDueDateText.substringAfter(":").trim()),
+                        user_id = userId
+                    )
+
+                    // Update vaccination record
+                    try {
+                        val recordId = vaccinationRecord.record_id ?: throw IllegalArgumentException("Record ID is null")
+                        val recordUpdated = updateRecord(recordId, vaccinationRecord, this@EditVaccinationRecordActivity)
+                        if (recordUpdated) {
+                            Toast.makeText(this@EditVaccinationRecordActivity, "Vaccination record saved!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            Toast.makeText(this@EditVaccinationRecordActivity, "Failed to save vaccination record", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(this@EditVaccinationRecordActivity, "Failed to save vaccination record", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun getId(email: String): Int? {
+        return withContext(Dispatchers.IO) {
+            UserSF.getId(email)
+        }
+    }
+
+    private suspend fun getRecord(recordId: Int): VaccinationRecord? {
+        return withContext(Dispatchers.IO) {
+            vaccinationRecordQueries.getRecord(recordId)
+        }
+    }
+
+    private suspend fun updateRecord(recordId: Int, vaccinationRecord: VaccinationRecord, context: Context): Boolean {
+        return withContext(Dispatchers.IO) {
+            val result = vaccinationRecordQueries.updateRecord(recordId, vaccinationRecord)
+            withContext(Dispatchers.Main) {
+                if (result) {
+                    Toast.makeText(context, "Record updated", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Record update failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+            result
         }
     }
 

@@ -29,19 +29,34 @@ class VaccinationRecordQueries(private val connection: Connection): VaccinationR
         return callableStatement.executeUpdate() > 0
     }
 
-    override fun getRecord(user_id: Int): Set<VaccinationRecord?>? {
-        val query= "{CALL getRecord(?)}"
-        val callableStatement= connection.prepareCall(query)
+    override fun getRecord(record_id: Int): VaccinationRecord? {
+        val query = "{CALL getRecord(?)}"
+        val callableStatement = connection.prepareCall(query)
+        callableStatement.setInt(1, record_id)
+        val resultSet = callableStatement.executeQuery()
+
+        return if (resultSet.next()){
+            mapResultSetToVaccinationRecord(resultSet)
+        } else {
+            null
+        }
+    }
+    override fun getAllRecords(user_id: Int): Set<VaccinationRecord?>? {
+        val query = "{CALL getAllRecords(?)}"
+        val callableStatement = connection.prepareCall(query)
         callableStatement.setInt(1, user_id)
         val resultSet = callableStatement.executeQuery()
 
-        val vaccinations= mutableSetOf<VaccinationRecord?>()
+        val vaccinations = mutableSetOf<VaccinationRecord?>()
         while (resultSet.next()){
             vaccinations.add(mapResultSetToVaccinationRecord(resultSet))
         }
 
         return if (vaccinations.isEmpty()) null else vaccinations
     }
+
+
+
 
     override fun updateRecord(record_id: Int, vaccinationRecord: VaccinationRecord): Boolean {
         val query = "{CALL updateRecord(?,?,?,?,?,?)}"
