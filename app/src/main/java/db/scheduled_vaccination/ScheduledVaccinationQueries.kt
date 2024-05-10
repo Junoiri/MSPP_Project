@@ -1,6 +1,7 @@
 package db.scheduled_vaccination
 
 import java.sql.Connection
+import java.sql.Date
 import java.sql.ResultSet
 
 class ScheduledVaccinationQueries(private val connection: Connection): ScheduledVaccinationDAO {
@@ -65,4 +66,19 @@ class ScheduledVaccinationQueries(private val connection: Connection): Scheduled
             user_id = resultSet.getInt("user_id")
         )
     }
+    override fun getScheduledVaccinationsByDate(user_id: Int, date: Date): Set<ScheduledVaccination?>? {
+        val query = "{CALL getScheduledVaccinationsByDate(?, ?)}"
+        val callableStatement = connection.prepareCall(query)
+        callableStatement.setInt(1, user_id)
+        callableStatement.setDate(2, date)
+        val resultSet = callableStatement.executeQuery()
+
+        val scheduledVaccinations = mutableSetOf<ScheduledVaccination?>()
+        while (resultSet.next()){
+            scheduledVaccinations.add(mapResultSetToScheduledVaccination(resultSet))
+        }
+
+        return if (scheduledVaccinations.isEmpty()) null else scheduledVaccinations
+    }
+
 }
