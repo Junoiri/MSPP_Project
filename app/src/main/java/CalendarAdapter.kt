@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mspp_project.R
 import java.time.LocalDate
@@ -41,7 +42,7 @@ class CalendarAdapter(
 
     // If the cell date is the same as the current date, change the background color
     if (currentDate == cellDate) {
-        holder.dayCell.setBackgroundColor(Color.MAGENTA)
+        holder.dayCell.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.red))
     } else {
         holder.dayCell.setBackgroundColor(Color.TRANSPARENT)
     }
@@ -56,7 +57,7 @@ class CalendarAdapter(
             // Update the selected position
             selectedPosition = currentPosition
             // Change the background color of the clicked cell to light gray
-            it.setBackgroundColor(Color.LTGRAY)
+            it.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.redTransparent))
             // Call the onItemClick method of the OnItemListener
             onItemListener.onItemClick(currentPosition, daysOfMonth[currentPosition])
             // Update the previous selected position

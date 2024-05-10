@@ -51,9 +51,10 @@ class VaccinationHistoryActivity : AppCompatActivity() {
         val toolbarTitle: TextView = findViewById(R.id.toolbar_title)
         val backButton: ImageView = findViewById(R.id.back_button)
 
-        toolbarTitle.text = "Vaccination History"
+        toolbarTitle.text = "History"
         backButton.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.stay, R.anim.pop_out)
         }
     }
 

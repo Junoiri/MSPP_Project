@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:background="@drawable/rounded_rectangle_vertical"
         android:gravity="start"
         android:orientation="vertical">
@@ -31,7 +31,7 @@
             android:layout_height="30dp"
             android:background="@null"
             android:scaleType="fitCenter"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="70dp"
             android:layout_marginLeft="5dp"
             android:src="@drawable/ic_user_y" />
 

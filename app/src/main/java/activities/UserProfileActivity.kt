@@ -64,7 +64,10 @@ class UserProfileActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        backButton.setOnClickListener { finish() }
+        backButton.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.stay, R.anim.pop_out)
+        }
         saveButton.setOnClickListener { saveChanges() }
     }
 
@@ -181,5 +184,6 @@ class UserProfileActivity : AppCompatActivity() {
             yesAction = { saveChanges() },
             noAction = { super.onBackPressed() }
         )
+        overridePendingTransition(R.anim.stay, R.anim.pop_out)
     }
 }

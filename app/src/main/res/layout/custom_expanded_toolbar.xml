@@ -4,7 +4,7 @@
     android:layout_width="240dp"
     android:layout_height="500dp"
     android:layout_gravity="start"
-    android:padding="5dp"
+    android:padding="10dp"
     android:background="@color/transparent">
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_width="200dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:padding="10dp">
@@ -32,9 +32,10 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="40dp"
                     android:padding="5dp"
+                    android:layout_gravity="center"
                     android:text="user@example.com"
-                    android:textColor="@color/white"
-                    android:textSize="10sp" />
+                    android:textColor="@color/transparent"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -66,27 +67,27 @@
                             android:textColor="@color/black"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="User Profile" />
+                            android:text="Profile" />
 
                         <Button
                             android:id="@+id/nav_vaccination_history"
                             style="@style/BlueButton"
                             android:background="@drawable/button_shape_o"
                             android:textColor="@color/black"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="18dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vaccination History" />
+                            android:text="History" />
 
                         <Button
                             android:id="@+id/nav_vaccination_calendar"
                             style="@style/BlueButton"
                             android:background="@drawable/button_shape_r"
                             android:textColor="@color/black"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="18dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vaccination Calendar" />
+                            android:text="Calendar" />
 
                     </LinearLayout>
             </LinearLayout>
