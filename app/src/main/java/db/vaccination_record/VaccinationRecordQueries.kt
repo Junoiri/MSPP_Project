@@ -1,6 +1,7 @@
 package db.vaccination_record
 
 import java.sql.Connection
+import java.sql.Date
 import java.sql.ResultSet
 
 class VaccinationRecordQueries(private val connection: Connection): VaccinationRecordDAO {
@@ -83,4 +84,19 @@ class VaccinationRecordQueries(private val connection: Connection): VaccinationR
             user_id = resultSet.getInt("user_id")
         )
     }
+    override fun getVaccinationRecordsByDate(user_id: Int, date: Date): Set<VaccinationRecord?>? {
+        val query = "{CALL getVaccinationRecordsByDate(?, ?)}"
+        val callableStatement = connection.prepareCall(query)
+        callableStatement.setInt(1, user_id)
+        callableStatement.setDate(2, date)
+        val resultSet = callableStatement.executeQuery()
+
+        val vaccinationRecords = mutableSetOf<VaccinationRecord?>()
+        while (resultSet.next()){
+            vaccinationRecords.add(mapResultSetToVaccinationRecord(resultSet))
+        }
+
+        return if (vaccinationRecords.isEmpty()) null else vaccinationRecords
+    }
+
 }

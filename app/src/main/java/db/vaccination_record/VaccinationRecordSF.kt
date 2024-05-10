@@ -5,6 +5,7 @@ import android.widget.Toast
 import db.DConnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.sql.Date
 
 object VaccinationRecordSF {
 
@@ -78,5 +79,15 @@ object VaccinationRecordSF {
             result
         }
     }
+    suspend fun getVaccinationRecordsByDate(user_id: Int, date: Date): Set<VaccinationRecord?>? {
+        return withContext(Dispatchers.IO) {
+            val connection = DConnection.getConnection()
+            val vaccinationRecordQueries = VaccinationRecordQueries(connection)
+            val result = vaccinationRecordQueries.getVaccinationRecordsByDate(user_id, date)
+            connection.close()
+            result
+        }
+    }
+
 
 }
